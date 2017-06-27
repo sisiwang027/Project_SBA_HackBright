@@ -31,13 +31,13 @@ db = SQLAlchemy()
 class Customer(db.Model):
     """Customer infomation"""
 
-    __tablename__ = "customer"
+    __tablename__ = "customers"
 
     cust_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(30), nullable=False)
     last_name = db.Column(db.String(30), nullable=False)
     gender_code = db.Column(db.String(8), db.ForeignKey('gender.gender_code'), nullable=False)
-    phone_number = db.Column(db.String(30), nullable=False)
+    phone_number = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
     birth_date = db.Column(db.Date, nullable=False)
     address = db.Column(db.String(256), nullable=False)
@@ -69,6 +69,18 @@ class User(db.Model):
         return "<User user_id={} first_name={} last_name={}>".formate(self.user_id, self.first_name, self.last_name)
 
 
+class Gender(db.Model):
+    """Gender type."""
+
+    __tablename__ = "gender"
+
+    gender_code = db.Column(db.String(8), primary_key=True)
+    gender_name = db.Column(db.String(8))
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Gender gender_code={} gender_name={}>".formate(self.gender_code, self.gender_name)
 
     # # Define relationship to user
     # user = db.relationship("User",

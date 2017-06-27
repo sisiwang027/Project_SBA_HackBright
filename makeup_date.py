@@ -19,7 +19,8 @@ for i in range(0,43):
 for i in range(0,43):
     print fake.zipcode()
 
-
+fake.date(pattern="%Y-%m-%d")
+fake.date(pattern="%Y %m %d"),
 
 
 for i in range(0,57):

@@ -61,7 +61,7 @@ CREATE TABLE customers (
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     gender_code VARCHAR(8) REFERENCES gender,
-    phone_number VARCHAR(30) NOT NULL,
+    phone_number VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     birth_date DATE NOT NULL, 
     address VARCHAR(256) NOT NULL,
