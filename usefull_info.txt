@@ -1,0 +1,119 @@
+    # Define relationship to user
+    user = db.relationship("User",
+                           backref=db.backref("ratings", order_by=rating_id))
+
+    # Define relationship to movie
+    movie = db.relationship("Movie",
+                            backref=db.bacAkref("ratings", order_by=rating_id))
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Rating rating_id=%s movie_id=%s user_id=%s score=%s>" % (
+            self.rating_id, self.movie_id, self.user_id, self.score)
+
+def set_val_user_id():
+    """Set value for the next user_id after seeding database"""
+
+    # Get the Max user_id in the database
+    result = db.session.query(func.max(User.user_id)).one()
+    max_id = int(result[0])
+
+    # Set the value for the next user_id to be max_id + 1
+    query = "SELECT setval('users_user_id_seq', :new_id)"
+    db.session.execute(query, {'new_id': max_id + 1})
+    db.session.commit()
+
+
+from flask_debugtoolbar import DebugToolbarExtension
+
+
+@app.route("/users")
+def users():
+    """Show list of users."""
+
+    users = User.query.all()
+    return render_template("user_list.html", users=users)
+
+@app.route("/register", methods=["GET"])
+def register_form():
+    """Show registration form."""
+
+    return render_template("register_form.html")
+
+
+@app.route("/register", methods=["POST"])
+def register_process():
+    """Submit registration form."""
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+    age = request.form.get("age")
+    zipcode = request.form.get("zipcode")
+
+    if User.query.filter_by(email=email).count() == 0:
+
+        new_user = User(email=email, password=password, age=age, zipcode=zipcode)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('You have successfully registered')
+
+        return redirect("/")
+
+    else:
+        flash('Your email was already registered!')
+
+        return redirect("/register")
+
+
+
+
+
+@app.route("/logout")
+def logout_process():
+    """User log out."""
+
+    session.pop('user_id', None)
+    flash('You have successfully logged out')
+    return redirect("/")
+
+
+base_file:
+
+ Ratings
+  <hr>
+  <p><a href="/">Home</a></p>
+  <p><a href="/register">Register</a></p>
+
+  {% if not session.get("user_id") %}
+    <a href="/login">Log In</a>
+  {% else %}
+    <a href="/logout">Log Out</a>
+  {% endif %}
+  
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+
+cars = Category(cg_name="cars")
+
+In [2]: db.session.add(cars)
+
+In [3]: style = CategoryDetailName(detailname="style")
+
+In [4]: sunroof = CategoryDetaiName(detailname="sunroof")
+
+  ----> 1 sunroof = CategoryDetaiName(detailname="sunroof")
+
+NameError: name 'CategoryDetaiName' is not defined
+
+In [5]: sunroof = CategoryDetailName(detailname="sunroof")
+
+In [6]: cars.category_details.extend([style, sunroof])

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Welcom!</h1>
+
+
+{% if session.get("user_id") %}
+<h2>Upload Products</h2>
+<p><a href="/upload_file">upload products data</a></p>
+{% endif %}
+
+
+{% endblock %}
+<!doctype html>
+
+

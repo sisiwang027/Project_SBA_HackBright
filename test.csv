@@ -1,0 +1,4 @@
+category_id,user_id,purchase_date,purchase_price,customer_id,sold_price,sold_date,returned_date,sub_category,brand,size
+1,1,6/22/17,50,1,140,6/29/17,,Dress,GAP,6
+1,1,6/22/17,50,4,140,6/29/17,,Dress,Zara,10
+1,1,6/22/17,50,4,140,6/29/17,,Dress,Zara,12

@@ -1,11 +1,10 @@
 """Utility file to seed sba database from MovieLens data in seed_data/"""
-# insert into gender values ('M', 'Male'), ('FM','Female');
-# insert into users (first_name, last_name, email, password) values ('sisi', 'wang', 'wangss.wuhan@gmail.com', '1111');
+
 
 from model import Gender, User, Customer, Category, Product, CategoryDetail, CategoryDetailName, CategoryDetailValue, ProductDetail
 from model import connect_to_db, db, app
 from faker import Faker
-from datetime import datetime, timedelta
+from datetime import timedelta
 import random
 
 fake = Faker()
@@ -184,11 +183,11 @@ def load_category_detail_values():
     d_value10 = CategoryDetailValue(cg_detailname_id=2, detail_value='Red Lipstick')
     d_value11 = CategoryDetailValue(cg_detailname_id=2, detail_value='Black')
 
-    d_value12 = CategoryDetailValue(cg_detailname_id=3, detail_value='gap')
+    d_value12 = CategoryDetailValue(cg_detailname_id=3, detail_value='Gap')
 
-    d_value13 = CategoryDetailValue(cg_detailname_id=4, detail_value='silk')
+    d_value13 = CategoryDetailValue(cg_detailname_id=4, detail_value='Silk')
 
-    d_value14 = CategoryDetailValue(cg_detailname_id=5, detail_value='dress')
+    d_value14 = CategoryDetailValue(cg_detailname_id=5, detail_value='Dress')
 
     d_shoe1 = CategoryDetailValue(cg_detailname_id=1, detail_value='5')
     d_shoe2 = CategoryDetailValue(cg_detailname_id=1, detail_value='5.5')
@@ -235,10 +234,30 @@ def load_category_detail_values():
     db.session.commit()
 
 
+def load_product_details():
+    """Load produnct dtails."""
+    cg1 = db.session.query(Product).filter(Product.cg_id == 1).all()
+    cg2 = db.session.query(Product).filter(Product.cg_id == 2).all()
+    detail_values = db.session.query(CategoryDetailValue).filter(CategoryDetailValue.cg_detailvalue_id <= 14).all()
+    detail_values2 = db.session.query(CategoryDetailValue).filter(CategoryDetailValue.cg_detailvalue_id > 14).all()
+
+    for cg in cg1:
+        for detail_value in detail_values:
+            p_detail = ProductDetail(p_id=cg.p_id, cg_detailvalue_id=detail_value.cg_detailvalue_id)
+            db.session.add(p_detail)
+
+    for cg in cg2:
+        for detail_value in detail_values2:
+            p_detail = ProductDetail(p_id=cg.p_id, cg_detailvalue_id=detail_value.cg_detailvalue_id)
+            db.session.add(p_detail)
+
+    db.session.commit()
+
+
 if __name__ == "__main__":
     connect_to_db(app)
     #db.drop_all()
-    #db.create_all()
+    db.create_all()
 
     # load_users()
     # load_gendertype()
@@ -249,7 +268,8 @@ if __name__ == "__main__":
     # load_category_detailname()
     # load_category_details()
 
-    load_category_detail_values()
+    # load_category_detail_values()
+    load_product_details()
 
 
 

@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <title>Small Business Assistant</title>
+</head>
+
+<body>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <p><a href="/">Home</a></p>
+  {% if session.get("user_id") %}
+    <a>Hi {{ session["first_name"] }}!</a>
+  {% endif %}
+
+  {% if not session.get("user_id") %}
+    <p><a href="/register">Register</a></p>
+    <a href="/login">Log In</a>
+  {% else %}
+    <a href="/logout">Log Out</a>
+  {% endif %}
+  
+  
+
+
+  {% block content %}
+  
+  {% endblock %}
+
+
+
+</body>
+</html>

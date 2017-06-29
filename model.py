@@ -30,7 +30,7 @@ class Gender(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<Gender gender_code={} gender_name={}>".formate(self.gender_code, self.gender_name)
+        return "<Gender gender_code={} gender_name={}>".format(self.gender_code, self.gender_name)
 
 
 class User(db.Model):
@@ -47,7 +47,7 @@ class User(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<User user_id={} first_name={} last_name={}>".formate(self.user_id, self.first_name, self.last_name)
+        return "<User user_id={} first_name={} last_name={}>".format(self.user_id, self.first_name, self.last_name)
 
 
 class Customer(db.Model):
@@ -61,7 +61,7 @@ class Customer(db.Model):
     gender_code = db.Column(db.String(8), db.ForeignKey('gender.gender_code'), nullable=False)
     phone_number = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
-    birth_date = db.Column(db.Date, nullable=False)
+    birth_date = db.Column(db.Date)
     address = db.Column(db.String(256), nullable=False)
     city = db.Column(db.String(30), nullable=False)
     state = db.Column(db.String(8), nullable=False)
@@ -71,7 +71,7 @@ class Customer(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<Customer cust_id={} first_name={} last_name={}>".formate(self.cust_id, self.first_name, self.last_name)
+        return "<Customer cust_id={} first_name={} last_name={}>".format(self.cust_id, self.first_name, self.last_name)
 
 
 class Category(db.Model):
@@ -85,28 +85,46 @@ class Category(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<Category category_id={} name={}>".formate(self.cg_id, self.cg_name)
+        return "<Category category_id={} name={}>".format(self.cg_id, self.cg_name)
 
 
-class Product(db.Model):
-    """Products that users purchased and sale."""
+class Purchase(db.Model):
+    """Purchases that users purchased and sale."""
 
-    __tablename__ = "products"
+    __tablename__ = "purchases"
 
     p_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     cg_id = db.Column(db.Integer, db.ForeignKey('categories.cg_id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     purchase_at = db.Column(db.DateTime(), nullable=False)
-    purchase_price = db.Column(db.Float(), nullable=False)
-    cust_id = db.Column(db.Integer, db.ForeignKey('customers.cust_id'))
-    sale_price = db.Column(db.Float())
-    sold_at = db.Column(db.DateTime())
-    returned_at = db.Column(db.DateTime())
+    purchase_price = db.Column(db.Decimal(10, 2), nullable=False)
+    sale_price = db.Column(db.Decimal(10, 2), nullable=False)
+    quantities = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<Product p_id={} user_id={}>".formate(self.p_id, self.user_id)
+        return "<Purchase p_id={} user_id={}>".format(self.p_id, self.user_id)
+
+
+class Sale(db.Model):
+    """Purchases that users purchased and sale."""
+
+    __tablename__ = "sales"
+
+    s_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    cg_id = db.Column(db.Integer, db.ForeignKey('categories.cg_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    cust_id = db.Column(db.Integer, db.ForeignKey('customers.cust_id'), nullable=False)
+    returned_flag = db.Column(db.Boolean, nullable=False)
+    transc_at = db.Column(db.DateTime(), nullable=False)
+    transc_price = db.Column(db.Decimal(10, 2), nullable=False)
+    quantities = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Sale s_id={} user_id={} cust_id={}>".format(self.s_id, self.user_id, self.cust_id)
 
 
 class CategoryDetailName(db.Model):
@@ -120,7 +138,7 @@ class CategoryDetailName(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<CategoryDetailName detail_name={}>".formate(self.detailname)
+        return "<CategoryDetailName detail_name={}>".format(self.detailname)
 
 
 class CategoryDetail(db.Model):
@@ -135,7 +153,7 @@ class CategoryDetail(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<CategoryDetail cg_id={} cg_detailname_id={}>".formate(self.cg_id, self.cg_detailname_id)
+        return "<CategoryDetail cg_id={} cg_detailname_id={}>".format(self.cg_id, self.cg_detailname_id)
 
 
 class CategoryDetailValue(db.Model):
@@ -150,22 +168,39 @@ class CategoryDetailValue(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<CategoryDetailValue cg_detailname_id={} detail_value={}>".formate(self.cg_detailname_id, self.detail_value)
+        return "<CategoryDetailValue cg_detailname_id={} detail_value={}>".format(self.cg_detailname_id, self.detail_value)
+
+
+class TranscType(db.Model):
+    """Transaction type name."""
+
+    __tablename__ = 'transaction_type'
+
+    transc_type = db.Column(db.String(8), autoincrement=True, primary_key=True)
+    type_name = db.Column(db.String(30), nullable=False)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<TranscType transc_type={} type_name={}>".format(self.transc_type, self.type_name)
 
 
 class ProductDetail(db.Model):
     """Detail infomation of each prodect."""
 
-    __tablename__ = "product_details"
+    __tablename__ = "purchase_details"
 
     detail_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    p_id = db.Column(db.Integer, db.ForeignKey("products.p_id"), autoincrement=True)
+    transc_type = db.Column(db.String(8), db.ForeignKey("transaction_type.transc_type"), nullable=False)
+    id = db.Column(db.Integer, db.ForeignKey("products.p_id"), autoincrement=True)
     cg_detailvalue_id = db.Column(db.Integer, db.ForeignKey("category_detail_values.cg_detailvalue_id"), autoincrement=True)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<ProductDetail p_id={} cg_detailvalue_id={}>".formate(self.p_id, self.cg_detailvalue_id)
+        return "<ProductDetail p_id={} cg_detailvalue_id={}>".format(self.p_id, self.cg_detailvalue_id)
+
+
 
 
 ##############################################################################
