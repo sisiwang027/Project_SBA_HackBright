@@ -4,12 +4,9 @@ from jinja2 import StrictUndefined
 from flask_debugtoolbar import DebugToolbarExtension
 from flask import (Flask, render_template, redirect, request, flash,
                    session, jsonify, url_for, send_from_directory)
-from model import (Gender, User, Customer, Category, Product, CategoryDetail,
-                   CategoryDetailName, CategoryDetailValue, ProductDetail)
+from model import (Gender, User, Customer, Category, Purchase, Sale, CategoryDetail,
+                   CategoryDetailName, CategoryDetailValue, PurchaseCgDetail, SaleCgDetail, TestUploadPurchase)
 from model import connect_to_db, db, app
-from werkzeug.utils import secure_filename
-import os
-import cgi
 
 app = Flask(__name__)
 
@@ -124,16 +121,41 @@ def upload_process():
     elif file.content_type != "text/csv":
         return "Please upload a CSV file."
     else:
-         # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        # filename = secure_filename(file.filename)
-        # return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+        i = 0
         for line in file:
-            print line
+            row = line.rstrip().split(",")
+            for colum in row:
+                colum = colum.strip()
+            if i == 0:
+                i += 1
+                row[7:]
+                continue
+            else:
+                load_csv_file(row)
+        db.session.commit()
 
-    return "hi"
+        return "Upload successfully!"
 
 ###########################################################################
 #useful functon
+
+
+def load_csv_file(row_list):
+    user_id, cg_id, purchase_at, purchase_price, sale_price, quantities, style, brand, size, material, color = row_list
+    print user_id, cg_id, purchase_at, purchase_price, sale_price, quantities, style, brand, size, material, color
+
+    add_row = TestUploadPurchase(user_id=user_id,
+                                 cg_id=cg_id,
+                                 purchase_at=purchase_at,
+                                 purchase_price=purchase_price,
+                                 sale_price=sale_price,
+                                 quantities=quantities,
+                                 style=style,
+                                 brand=brand,
+                                 size=size,
+                                 material=material,
+                                 color=color)
+    db.session.add(add_row)
 
 
 if __name__ == "__main__":

@@ -117,3 +117,31 @@ NameError: name 'CategoryDetaiName' is not defined
 In [5]: sunroof = CategoryDetailName(detailname="sunroof")
 
 In [6]: cars.category_details.extend([style, sunroof])
+
+# association table
+def load_category_details():
+    """Load category details."""
+
+    cloth_d1 = CategoryDetail(cg_id=1, cg_detailname_id=1)
+    cloth_d2 = CategoryDetail(cg_id=1, cg_detailname_id=2)
+    cloth_d3 = CategoryDetail(cg_id=1, cg_detailname_id=3)
+    cloth_d4 = CategoryDetail(cg_id=1, cg_detailname_id=4)
+    cloth_d5 = CategoryDetail(cg_id=1, cg_detailname_id=5)
+
+    shoe_d1 = CategoryDetail(cg_id=2, cg_detailname_id=1)
+    shoe_d2 = CategoryDetail(cg_id=2, cg_detailname_id=2)
+    shoe_d3 = CategoryDetail(cg_id=2, cg_detailname_id=3)
+    shoe_d4 = CategoryDetail(cg_id=2, cg_detailname_id=5)
+
+    db.session.add(cloth_d1)
+    db.session.add(cloth_d2)
+    db.session.add(cloth_d3)
+    db.session.add(cloth_d4)
+    db.session.add(cloth_d5)
+
+    db.session.add(shoe_d1)
+    db.session.add(shoe_d2)
+    db.session.add(shoe_d3)
+    db.session.add(shoe_d4)
+
+    db.session.commit()

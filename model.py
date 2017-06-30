@@ -94,11 +94,11 @@ class Purchase(db.Model):
     __tablename__ = "purchases"
 
     p_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    cg_id = db.Column(db.Integer, db.ForeignKey('categories.cg_id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    cg_id = db.Column(db.Integer, db.ForeignKey('categories.cg_id'), nullable=False)
     purchase_at = db.Column(db.DateTime(), nullable=False)
-    purchase_price = db.Column(db.Decimal(10, 2), nullable=False)
-    sale_price = db.Column(db.Decimal(10, 2), nullable=False)
+    purchase_price = db.Column(db.DECIMAL(10, 2), nullable=False)
+    sale_price = db.Column(db.DECIMAL(10, 2), nullable=False)
     quantities = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
@@ -113,12 +113,12 @@ class Sale(db.Model):
     __tablename__ = "sales"
 
     s_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    cg_id = db.Column(db.Integer, db.ForeignKey('categories.cg_id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     cust_id = db.Column(db.Integer, db.ForeignKey('customers.cust_id'), nullable=False)
+    cg_id = db.Column(db.Integer, db.ForeignKey('categories.cg_id'), nullable=False)
     returned_flag = db.Column(db.Boolean, nullable=False)
     transc_at = db.Column(db.DateTime(), nullable=False)
-    transc_price = db.Column(db.Decimal(10, 2), nullable=False)
+    transc_price = db.Column(db.DECIMAL(10, 2), nullable=False)
     quantities = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
@@ -171,36 +171,72 @@ class CategoryDetailValue(db.Model):
         return "<CategoryDetailValue cg_detailname_id={} detail_value={}>".format(self.cg_detailname_id, self.detail_value)
 
 
-class TranscType(db.Model):
-    """Transaction type name."""
+# class TranscType(db.Model):
+#     """Transaction type name."""
 
-    __tablename__ = 'transaction_type'
+#     __tablename__ = 'transaction_type'
 
-    transc_type = db.Column(db.String(8), autoincrement=True, primary_key=True)
-    type_name = db.Column(db.String(30), nullable=False)
+#     transc_type = db.Column(db.String(8), primary_key=True)
+#     type_name = db.Column(db.String(30), nullable=False)
 
-    def __repr__(self):
-        """Provide helpful representation when printed."""
+#     def __repr__(self):
+#         """Provide helpful representation when printed."""
 
-        return "<TranscType transc_type={} type_name={}>".format(self.transc_type, self.type_name)
+#         return "<TranscType transc_type={} type_name={}>".format(self.transc_type, self.type_name)
 
 
-class ProductDetail(db.Model):
+class PurchaseCgDetail(db.Model):
     """Detail infomation of each prodect."""
 
-    __tablename__ = "purchase_details"
+    __tablename__ = "purchase_cg_details"
 
     detail_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    transc_type = db.Column(db.String(8), db.ForeignKey("transaction_type.transc_type"), nullable=False)
-    id = db.Column(db.Integer, db.ForeignKey("products.p_id"), autoincrement=True)
-    cg_detailvalue_id = db.Column(db.Integer, db.ForeignKey("category_detail_values.cg_detailvalue_id"), autoincrement=True)
+    p_id = db.Column(db.Integer, db.ForeignKey("purchases.p_id"), nullable=False)
+    cg_detailvalue_id = db.Column(db.Integer, db.ForeignKey("category_detail_values.cg_detailvalue_id"), nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<ProductDetail p_id={} cg_detailvalue_id={}>".format(self.p_id, self.cg_detailvalue_id)
+        return "<PurchaseCgDetail p_id={} cg_detailvalue_id={}>".format(self.p_id, self.cg_detailvalue_id)
 
 
+class SaleCgDetail(db.Model):
+    """Detail infomation of each prodect."""
+
+    __tablename__ = "sale_cg_details"
+
+    detail_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    s_id = db.Column(db.Integer, db.ForeignKey("sales.s_id"), nullable=False)
+    cg_detailvalue_id = db.Column(db.Integer, db.ForeignKey("category_detail_values.cg_detailvalue_id"), nullable=False)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<SaleCgDetail s_id={} cg_detailvalue_id={}>".format(self.s_id, self.cg_detailvalue_id)
+
+
+class TestUploadPurchase(db.Model):
+    """Test upload purchase CSV."""
+
+    __tablename__ = "test"
+
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    cg_id = db.Column(db.Integer, nullable=False)
+    purchase_at = db.Column(db.DateTime(), nullable=False)
+    purchase_price = db.Column(db.DECIMAL(10, 2), nullable=False)
+    sale_price = db.Column(db.DECIMAL(10, 2), nullable=False)
+    quantities = db.Column(db.Integer, nullable=False)
+    style = db.Column(db.String(30), nullable=False)
+    brand = db.Column(db.String(30), nullable=False)
+    size = db.Column(db.String(30), nullable=False)
+    material = db.Column(db.String(30), nullable=False)
+    color = db.Column(db.String(30), nullable=False)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<test >"
 
 
 ##############################################################################
@@ -221,7 +257,7 @@ if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
 
-    from server import app
+    #from server import app
 
     connect_to_db(app)
     print "Connected to DB."

@@ -1,7 +1,8 @@
 """Utility file to seed sba database from MovieLens data in seed_data/"""
 
 
-from model import Gender, User, Customer, Category, Product, CategoryDetail, CategoryDetailName, CategoryDetailValue, ProductDetail
+from model import (Gender, User, Customer, Category, Purchase, Sale, CategoryDetail, CategoryDetailName,
+                   CategoryDetailValue, PurchaseCgDetail, SaleCgDetail)
 from model import connect_to_db, db, app
 from faker import Faker
 from datetime import timedelta
@@ -89,34 +90,40 @@ def load_categories():
     db.session.commit()
 
 
-def load_products():
-    """Load products infomation."""
+def load_sales():
+    """Load product sale infomation."""
+
+    for i in range(0, 60):
+        sale = Sale(user_id=1,
+                    cust_id=random.randint(1, 100),
+                    cg_id=random.randint(1, 2),
+                    returned_flag=False,
+                    transc_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
+                    transc_price=random.randint(50, 150),
+                    quantities=random.randint(1, 5)
+                    )
+
+        db.session.add(sale)
+
+    db.session.commit()
+
+
+def load_purchases():
+    """Load purchases infomation."""
 
     for i in range(0, 123):
-        purchase_price = random.randint(15, 100)
-        purchase_at = fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None)
 
-        product = Product(cg_id=random.randint(1, 2),
-                          user_id=1,
-                          purchase_at=purchase_at,
-                          purchase_price=purchase_price,
-                          cust_id=random.randint(1, 100),
-                          sale_price=purchase_price + random.randint(30, 100),
-                          sold_at=purchase_at + timedelta(days=random.randint(1, 61))
-                          )
+        purchase_price = random.randint(15, 100) * 1.99
 
-        db.session.add(product)
+        purchase = Purchase(user_id=1,
+                            cg_id=random.randint(1, 2),
+                            purchase_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
+                            purchase_price=purchase_price,
+                            sale_price=purchase_price + random.randint(30, 100),
+                            quantities=random.randint(20, 121)
+                            )
 
-    for i in range(0, 50):
-
-        product = Product(cg_id=random.randint(1, 2),
-                          user_id=1,
-                          purchase_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
-                          purchase_price=random.randint(15, 100),
-                          cust_id=random.randint(1, 100)
-                          )
-
-        db.session.add(product)
+        db.session.add(purchase)
 
     db.session.commit()
 
@@ -128,41 +135,13 @@ def load_category_detailname():
     color = CategoryDetailName(detailname='color')
     brand = CategoryDetailName(detailname='brand')
     material = CategoryDetailName(detailname='material')
-    sub_category = CategoryDetailName(detailname='sub_category')
+    sub_category = CategoryDetailName(detailname='style')
 
     db.session.add(size)
     db.session.add(color)
     db.session.add(brand)
     db.session.add(material)
     db.session.add(sub_category)
-
-    db.session.commit()
-
-
-def load_category_details():
-    """Load category details."""
-
-    cloth_d1 = CategoryDetail(cg_id=1, cg_detailname_id=1)
-    cloth_d2 = CategoryDetail(cg_id=1, cg_detailname_id=2)
-    cloth_d3 = CategoryDetail(cg_id=1, cg_detailname_id=3)
-    cloth_d4 = CategoryDetail(cg_id=1, cg_detailname_id=4)
-    cloth_d5 = CategoryDetail(cg_id=1, cg_detailname_id=5)
-
-    shoe_d1 = CategoryDetail(cg_id=2, cg_detailname_id=1)
-    shoe_d2 = CategoryDetail(cg_id=2, cg_detailname_id=2)
-    shoe_d3 = CategoryDetail(cg_id=2, cg_detailname_id=3)
-    shoe_d4 = CategoryDetail(cg_id=2, cg_detailname_id=5)
-
-    db.session.add(cloth_d1)
-    db.session.add(cloth_d2)
-    db.session.add(cloth_d3)
-    db.session.add(cloth_d4)
-    db.session.add(cloth_d5)
-
-    db.session.add(shoe_d1)
-    db.session.add(shoe_d2)
-    db.session.add(shoe_d3)
-    db.session.add(shoe_d4)
 
     db.session.commit()
 
@@ -234,21 +213,55 @@ def load_category_detail_values():
     db.session.commit()
 
 
-def load_product_details():
-    """Load produnct dtails."""
-    cg1 = db.session.query(Product).filter(Product.cg_id == 1).all()
-    cg2 = db.session.query(Product).filter(Product.cg_id == 2).all()
+# def load_transc_type():
+#     """Load transaction types."""
+
+#     sold = TranscType(transc_type='s', type_name='sold')
+#     returned = TranscType(transc_type='r', type_name='returned')
+
+#     db.session.add(sold)
+#     db.session.add(returned)
+
+#     db.session.commit()
+
+
+def load_purchase_cg_details():
+    """Load purchase cagegory dtails."""
+
+    purchase_cg1 = db.session.query(Purchase).filter(Purchase.cg_id == 1).all()
+    purchase_cg2 = db.session.query(Purchase).filter(Purchase.cg_id == 2).all()
     detail_values = db.session.query(CategoryDetailValue).filter(CategoryDetailValue.cg_detailvalue_id <= 14).all()
     detail_values2 = db.session.query(CategoryDetailValue).filter(CategoryDetailValue.cg_detailvalue_id > 14).all()
 
-    for cg in cg1:
+    for cg in purchase_cg1:
         for detail_value in detail_values:
-            p_detail = ProductDetail(p_id=cg.p_id, cg_detailvalue_id=detail_value.cg_detailvalue_id)
+            p_detail = PurchaseCgDetail(p_id=cg.p_id, cg_detailvalue_id=detail_value.cg_detailvalue_id)
             db.session.add(p_detail)
 
-    for cg in cg2:
+    for cg in purchase_cg2:
         for detail_value in detail_values2:
-            p_detail = ProductDetail(p_id=cg.p_id, cg_detailvalue_id=detail_value.cg_detailvalue_id)
+            p_detail = PurchaseCgDetail(p_id=cg.p_id, cg_detailvalue_id=detail_value.cg_detailvalue_id)
+            db.session.add(p_detail)
+
+    db.session.commit()
+
+
+def load_sale_cg_details():
+    """Load sale cagegory dtails."""
+
+    sale_cg1 = db.session.query(Sale).filter(Sale.cg_id == 1).all()
+    sale_cg2 = db.session.query(Sale).filter(Sale.cg_id == 2).all()
+    detail_values = db.session.query(CategoryDetailValue).filter(CategoryDetailValue.cg_detailvalue_id <= 14).all()
+    detail_values2 = db.session.query(CategoryDetailValue).filter(CategoryDetailValue.cg_detailvalue_id > 14).all()
+
+    for cg in sale_cg1:
+        for detail_value in detail_values:
+            p_detail = SaleCgDetail(s_id=cg.s_id, cg_detailvalue_id=detail_value.cg_detailvalue_id)
+            db.session.add(p_detail)
+
+    for cg in sale_cg2:
+        for detail_value in detail_values2:
+            p_detail = SaleCgDetail(s_id=cg.s_id, cg_detailvalue_id=detail_value.cg_detailvalue_id)
             db.session.add(p_detail)
 
     db.session.commit()
@@ -256,20 +269,21 @@ def load_product_details():
 
 if __name__ == "__main__":
     connect_to_db(app)
-    #db.drop_all()
+    # db.drop_all()
     db.create_all()
 
     # load_users()
     # load_gendertype()
     # load_customers()
     # load_categories()
-    # load_products()
+    # load_purchases()
+    # load_sales()
 
     # load_category_detailname()
-    # load_category_details()
-
     # load_category_detail_values()
-    load_product_details()
+
+    # load_purchase_cg_details()
+    # load_sale_cg_details()
 
 
 
