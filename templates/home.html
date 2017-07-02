@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Welcom!</h1>
 
 
 {% if session.get("user_id") %}
-<h2>Upload Products</h2>
-<p><a href="/upload_file">upload products data</a></p>
+<h2>Upload Files</h2>
+<p><a href="/upload_product">upload purchase transactions</a></p>
+
+<p><a href="/upload_sale">upload sale transactions</a></p>
+
+<p><a href="/upload_category">upload category infomation</a></p>
 {% endif %}
 
 
