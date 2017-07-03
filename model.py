@@ -1,5 +1,6 @@
 """Models and database functions for Ratings project."""
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.schema import UniqueConstraint
 from flask import Flask, render_template, request, flash, redirect, session
 
 app = Flask(__name__)
@@ -128,10 +129,12 @@ class Product(db.Model):
 
     prd_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    prd_name = db.Column(db.String(80), unique=True)
+    prd_name = db.Column(db.String(80))
     cg_id = db.Column(db.Integer, db.ForeignKey('categories.cg_id'), nullable=False)
     sale_price = db.Column(db.DECIMAL(10, 2), nullable=False)
     description = db.Column(db.String(256))
+
+    __table_args__ = (UniqueConstraint('user_id', 'prd_name', name='_user_product'),)
 
     prddetail = db.relationship("CategoryDetailValue",
                                 secondary="product_details",

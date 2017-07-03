@@ -135,47 +135,7 @@ def upload_purchase():
                         attrs = CategoryAttribute(attr_name=attr)
                         db.session.add(attrs)
             else:
-                cg = Category.query.filter_by(cg_name=row[1].lower()).first()
-
-                product = Product(user_id=session["user_id"],
-                                  prd_name=row[0],
-                                  cg_id=cg.cg_id,
-                                  sale_price=row[2],
-                                  description=row[3])
-                db.session.add(product)
-                db.session.commit
-
-                attr_val = row[4:]
-                val_list = []
-
-                # read values of attributes.
-                for i in range(0, len(attr_val)):
-
-                    attr = CategoryAttribute.query.filter_by(attr_name=category_attr[i]).first()
-
-                    attr_val[i] = attr_val[i].lower()
-
-                    # adding attribute-value pairs into category_attributes.
-                    val = CategoryDetailValue.query.filter_by(cg_attr_id=attr.cg_attr_id, attr_val=attr_val[i]).first()
-                    if val and attr_val[i] is not None:
-                        val_list.append(val)
-
-                    elif val and attr_val[i] is None:
-                        continue
-
-                    elif not val and attr_val[i] is not None:
-                        new_val = CategoryDetailValue(cg_attr_id=attr.cg_attr_id, attr_val=attr_val[i])
-                        db.session.add(new_val)
-                        val_list.append(new_val)
-
-                    # adding category-attribute pairs into category_attributes.
-                    if CategoryDetail.query.filter_by(cg_id=cg.cg_id, cg_attr_id=attr.cg_attr_id).first() or attr_val[i] is None:
-                        continue
-                    else:
-                        cg.cgattribute.append(attr)
-
-                product.prddetail.extend(val_list)
-                db.session.commit()
+                load_products(row, category_attr)
 
         return "Upload successfully!"
 
@@ -185,6 +145,7 @@ def upload_sale():
     """Upload sale transactions."""
 
     pass
+
 
 @app.route("/upload_category", methods=["POST"])
 def upload_category():
@@ -196,22 +157,51 @@ def upload_category():
 #useful functon
 
 
-def load_csv_file(row_list):
-    user_id, cg_id, purchase_at, purchase_price, sale_price, quantities, style, brand, size, material, color = row_list
-    print user_id, cg_id, purchase_at, purchase_price, sale_price, quantities, style, brand, size, material, color
+def load_products(rowlist, attr_list):
+    """Load product file to five tables: products, category_detail_values,
+    product_details, category_attributes, category_details."""
 
-    add_row = TestUploadPurchase(user_id=user_id,
-                                 cg_id=cg_id,
-                                 purchase_at=purchase_at,
-                                 purchase_price=purchase_price,
-                                 sale_price=sale_price,
-                                 quantities=quantities,
-                                 style=style,
-                                 brand=brand,
-                                 size=size,
-                                 material=material,
-                                 color=color)
-    db.session.add(add_row)
+    cg = Category.query.filter_by(cg_name=rowlist[1].lower()).first()
+
+    product = Product(user_id=session["user_id"],
+                      prd_name=rowlist[0],
+                      cg_id=cg.cg_id,
+                      sale_price=rowlist[2],
+                      description=rowlist[3])
+    db.session.add(product)
+    db.session.commit
+
+    attr_val = rowlist[4:]
+    val_list = []
+
+    # read values of attributes.
+    for i in range(0, len(attr_val)):
+
+        attr = CategoryAttribute.query.filter_by(attr_name=attr_list[i]).first()
+
+        attr_val[i] = attr_val[i].lower()
+
+        # adding attribute-value pairs into category_attributes.
+        val = CategoryDetailValue.query.filter_by(cg_attr_id=attr.cg_attr_id, attr_val=attr_val[i]).first()
+        if val and attr_val[i] != '':
+            val_list.append(val)
+
+        elif val and attr_val[i] == '':
+            continue
+
+        elif not val and attr_val[i] != '':
+            new_val = CategoryDetailValue(cg_attr_id=attr.cg_attr_id, attr_val=attr_val[i])
+            db.session.add(new_val)
+            val_list.append(new_val)
+
+        # adding category-attribute pairs into category_attributes.
+        if CategoryDetail.query.filter_by(cg_id=cg.cg_id, cg_attr_id=attr.cg_attr_id).first() or attr_val[i] == '':
+            continue
+        else:
+            cg.cgattribute.append(attr)
+
+    product.prddetail.extend(val_list)
+    db.session.commit()
 
 
 if __name__ == "__main__":
