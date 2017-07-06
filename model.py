@@ -235,10 +235,10 @@ if __name__ == "__main__":
 #     transc_price = db.Column(db.DECIMAL(10, 2), nullable=False)
 #     quantities = db.Column(db.Integer, nullable=False)
 
-#     def __repr__(self):
-#         """Provide helpful representation when printed."""
+    # def __repr__(self):
+    #     """Provide helpful representation when printed."""
 
-#         return "<Sale transc_id={} user_id={} cust_id={} prd_id={}>".format(self.transc_id, self.user_id, self.cust_id, self.prd_id)
+    #     return "<Sale transc_id={} user_id={} cust_id={} prd_id={}>".format(self.transc_id, self.user_id, self.cust_id, self.prd_id)
 
 
 # class PurchaseCgDetail(db.Model):

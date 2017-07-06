@@ -114,73 +114,6 @@ def load_category_attributes():
     db.session.commit()
 
 
-def load_category_detail_values():
-    """Load values of category details."""
-
-    d_value1 = CategoryDetailValue(cg_attribute_id=1, detail_value='0')
-    d_value2 = CategoryDetailValue(cg_attribute_id=1, detail_value='2')
-    d_value3 = CategoryDetailValue(cg_attribute_id=1, detail_value='4')
-    d_value4 = CategoryDetailValue(cg_attribute_id=1, detail_value='6')
-    d_value5 = CategoryDetailValue(cg_attribute_id=1, detail_value='8')
-    d_value6 = CategoryDetailValue(cg_attribute_id=1, detail_value='10')
-
-    d_value7 = CategoryDetailValue(cg_attribute_id=2, detail_value='Midnight')
-    d_value8 = CategoryDetailValue(cg_attribute_id=2, detail_value='Pink Polish')
-    d_value9 = CategoryDetailValue(cg_attribute_id=2, detail_value='Purple Dark')
-    d_value10 = CategoryDetailValue(cg_attribute_id=2, detail_value='Red Lipstick')
-    d_value11 = CategoryDetailValue(cg_attribute_id=2, detail_value='Black')
-
-    d_value12 = CategoryDetailValue(cg_attribute_id=3, detail_value='Gap')
-
-    d_value13 = CategoryDetailValue(cg_attribute_id=4, detail_value='Silk')
-
-    d_value14 = CategoryDetailValue(cg_attribute_id=5, detail_value='Dress')
-
-    d_shoe1 = CategoryDetailValue(cg_attribute_id=1, detail_value='5')
-    d_shoe2 = CategoryDetailValue(cg_attribute_id=1, detail_value='5.5')
-    d_shoe3 = CategoryDetailValue(cg_attribute_id=1, detail_value='6')
-    d_shoe4 = CategoryDetailValue(cg_attribute_id=1, detail_value='6.5')
-    d_shoe5 = CategoryDetailValue(cg_attribute_id=1, detail_value='7')
-    d_shoe6 = CategoryDetailValue(cg_attribute_id=1, detail_value='7.5')
-    d_shoe7 = CategoryDetailValue(cg_attribute_id=1, detail_value='8')
-
-    d_shoe8 = CategoryDetailValue(cg_attribute_id=2, detail_value='Black/Matte')
-    d_shoe9 = CategoryDetailValue(cg_attribute_id=2, detail_value='White/Pure')
-
-    d_shoe10 = CategoryDetailValue(cg_attribute_id=3, detail_value='Nike')
-
-    d_shoe11 = CategoryDetailValue(cg_attribute_id=5, detail_value='AIR JORDAN 4 RETRO')
-
-    db.session.add(d_value1)
-    db.session.add(d_value2)
-    db.session.add(d_value3)
-    db.session.add(d_value4)
-    db.session.add(d_value5)
-    db.session.add(d_value6)
-    db.session.add(d_value7)
-    db.session.add(d_value8)
-    db.session.add(d_value9)
-    db.session.add(d_value10)
-    db.session.add(d_value11)
-    db.session.add(d_value12)
-    db.session.add(d_value13)
-    db.session.add(d_value14)
-
-    db.session.add(d_shoe1)
-    db.session.add(d_shoe2)
-    db.session.add(d_shoe3)
-    db.session.add(d_shoe4)
-    db.session.add(d_shoe5)
-    db.session.add(d_shoe6)
-    db.session.add(d_shoe7)
-    db.session.add(d_shoe8)
-    db.session.add(d_shoe9)
-    db.session.add(d_shoe10)
-    db.session.add(d_shoe11)
-
-    db.session.commit()
-
-
 if __name__ == "__main__":
     connect_to_db(app)
     # db.drop_all()
@@ -294,6 +227,72 @@ if __name__ == "__main__":
 #         for detail_value in detail_values2:
 #             p_detail = SaleCgDetail(s_id=cg.s_id, cg_detailvalue_id=detail_value.cg_detailvalue_id)
 #             db.session.add(p_detail)
+
+#     db.session.commit()
+
+# def load_category_detail_values():
+#     """Load values of category details."""
+
+#     d_value1 = CategoryDetailValue(cg_attribute_id=1, detail_value='0')
+#     d_value2 = CategoryDetailValue(cg_attribute_id=1, detail_value='2')
+#     d_value3 = CategoryDetailValue(cg_attribute_id=1, detail_value='4')
+#     d_value4 = CategoryDetailValue(cg_attribute_id=1, detail_value='6')
+#     d_value5 = CategoryDetailValue(cg_attribute_id=1, detail_value='8')
+#     d_value6 = CategoryDetailValue(cg_attribute_id=1, detail_value='10')
+
+#     d_value7 = CategoryDetailValue(cg_attribute_id=2, detail_value='Midnight')
+#     d_value8 = CategoryDetailValue(cg_attribute_id=2, detail_value='Pink Polish')
+#     d_value9 = CategoryDetailValue(cg_attribute_id=2, detail_value='Purple Dark')
+#     d_value10 = CategoryDetailValue(cg_attribute_id=2, detail_value='Red Lipstick')
+#     d_value11 = CategoryDetailValue(cg_attribute_id=2, detail_value='Black')
+
+#     d_value12 = CategoryDetailValue(cg_attribute_id=3, detail_value='Gap')
+
+#     d_value13 = CategoryDetailValue(cg_attribute_id=4, detail_value='Silk')
+
+#     d_value14 = CategoryDetailValue(cg_attribute_id=5, detail_value='Dress')
+
+#     d_shoe1 = CategoryDetailValue(cg_attribute_id=1, detail_value='5')
+#     d_shoe2 = CategoryDetailValue(cg_attribute_id=1, detail_value='5.5')
+#     d_shoe3 = CategoryDetailValue(cg_attribute_id=1, detail_value='6')
+#     d_shoe4 = CategoryDetailValue(cg_attribute_id=1, detail_value='6.5')
+#     d_shoe5 = CategoryDetailValue(cg_attribute_id=1, detail_value='7')
+#     d_shoe6 = CategoryDetailValue(cg_attribute_id=1, detail_value='7.5')
+#     d_shoe7 = CategoryDetailValue(cg_attribute_id=1, detail_value='8')
+
+#     d_shoe8 = CategoryDetailValue(cg_attribute_id=2, detail_value='Black/Matte')
+#     d_shoe9 = CategoryDetailValue(cg_attribute_id=2, detail_value='White/Pure')
+
+#     d_shoe10 = CategoryDetailValue(cg_attribute_id=3, detail_value='Nike')
+
+#     d_shoe11 = CategoryDetailValue(cg_attribute_id=5, detail_value='AIR JORDAN 4 RETRO')
+
+#     db.session.add(d_value1)
+#     db.session.add(d_value2)
+#     db.session.add(d_value3)
+#     db.session.add(d_value4)
+#     db.session.add(d_value5)
+#     db.session.add(d_value6)
+#     db.session.add(d_value7)
+#     db.session.add(d_value8)
+#     db.session.add(d_value9)
+#     db.session.add(d_value10)
+#     db.session.add(d_value11)
+#     db.session.add(d_value12)
+#     db.session.add(d_value13)
+#     db.session.add(d_value14)
+
+#     db.session.add(d_shoe1)
+#     db.session.add(d_shoe2)
+#     db.session.add(d_shoe3)
+#     db.session.add(d_shoe4)
+#     db.session.add(d_shoe5)
+#     db.session.add(d_shoe6)
+#     db.session.add(d_shoe7)
+#     db.session.add(d_shoe8)
+#     db.session.add(d_shoe9)
+#     db.session.add(d_shoe10)
+#     db.session.add(d_shoe11)
 
 #     db.session.commit()
 

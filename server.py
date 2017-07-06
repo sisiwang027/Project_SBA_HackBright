@@ -7,6 +7,7 @@ from flask import (Flask, render_template, redirect, request, flash,
 from model import (Gender, User, Customer, Category, CategoryAttribute, CategoryDetail,
                    Product, CategoryDetailValue, ProductDetail)
 from model import connect_to_db, db, app
+from loadCSVfile import load_csv_product, add_category
 
 app = Flask(__name__)
 
@@ -99,109 +100,79 @@ def logout_process():
 
 
 @app.route("/upload_product")
-def upload_file():
+def upload_product():
     """Show upload page."""
 
     return render_template("upload_file.html")
 
 
 @app.route("/upload_product", methods=["POST"])
-def upload_purchase():
+def upload_product_process():
     """Upload purchase transactions."""
 
     file = request.files.get("fileToUpload")
 
-    if not file:
-        return "No Selected File!" + "\n" + "Please choose a file."
-    elif file.content_type != "text/csv":
-        return "Please upload a CSV file."
-    else:
-        i = 0
-        for line in file:
-            row = line.rstrip().split(",")
-            for colum in row:
-                colum = colum.strip()
-            if i == 0:
-                # read the title of CSV file.
-                i += 1
-                category_attr = row[4:]
-                # read attributes of category
-                for attr in category_attr:
-                    # add attributes into category_attributes.
-                    attr = attr.lower()
-                    if CategoryAttribute.query.filter_by(attr_name=attr).first():
-                        continue
-                    else:
-                        attrs = CategoryAttribute(attr_name=attr)
-                        db.session.add(attrs)
-            else:
-                load_products(row, category_attr)
-
-        return "Upload successfully!"
+    return load_csv_product(file)
 
 
-@app.route("/upload_sale", methods=["POST"])
-def upload_sale():
-    """Upload sale transactions."""
+@app.route("/add_category")
+def add_category_form():
+    """Show form of adding categories."""
 
-    pass
+    return render_template("add_category.html")
 
 
-@app.route("/upload_category", methods=["POST"])
-def upload_category():
-    """Upload category information."""
+@app.route("/add_category", methods=["POST"])
+def add_category_process():
+    """adding category to table categories."""
+
+    cg_name = request.form.get("cg")
+
+    return add_category(cg_name)
+
+
+@app.route("/add_product")
+def add_product_form():
+    """Show form of adding products."""
+
+    categories = Category.query.all()
+
+    return render_template("add_product.html", categories=categories)
+    # render_template("add_product.html", categories)
+
+
+@app.route("/add_product", methods=["POST"])
+def add_product_process():
+    """adding category to table categories."""
+
+    category = request.form.get("category")
+    productname = request.form.get("productname")
+    saleprice = request.form.get("saleprice")
+    description == request.form.get("description")
 
     pass
+
+    # return add_product_to_table()
+
+
+# @app.route("/upload_sale", methods=["POST"])
+# def upload_sale():
+#     """Upload sale transactions."""
+
+#     pass
+
+
+# @app.route("/upload_category", methods=["POST"])
+# def upload_category():
+#     """Upload category information."""
+
+#     pass
 
 ###########################################################################
 #useful functon
 
 
-def load_products(rowlist, attr_list):
-    """Load product file to five tables: products, category_detail_values,
-    product_details, category_attributes, category_details."""
 
-    cg = Category.query.filter_by(cg_name=rowlist[1].lower()).first()
-
-    product = Product(user_id=session["user_id"],
-                      prd_name=rowlist[0],
-                      cg_id=cg.cg_id,
-                      sale_price=rowlist[2],
-                      description=rowlist[3])
-    db.session.add(product)
-    db.session.commit
-
-    attr_val = rowlist[4:]
-    val_list = []
-
-    # read values of attributes.
-    for i in range(0, len(attr_val)):
-
-        attr = CategoryAttribute.query.filter_by(attr_name=attr_list[i]).first()
-
-        attr_val[i] = attr_val[i].lower()
-
-        # adding attribute-value pairs into category_attributes.
-        val = CategoryDetailValue.query.filter_by(cg_attr_id=attr.cg_attr_id, attr_val=attr_val[i]).first()
-        if val and attr_val[i] != '':
-            val_list.append(val)
-
-        elif val and attr_val[i] == '':
-            continue
-
-        elif not val and attr_val[i] != '':
-            new_val = CategoryDetailValue(cg_attr_id=attr.cg_attr_id, attr_val=attr_val[i])
-            db.session.add(new_val)
-            val_list.append(new_val)
-
-        # adding category-attribute pairs into category_attributes.
-        if CategoryDetail.query.filter_by(cg_id=cg.cg_id, cg_attr_id=attr.cg_attr_id).first() or attr_val[i] == '':
-            continue
-        else:
-            cg.cgattribute.append(attr)
-
-    product.prddetail.extend(val_list)
-    db.session.commit()
 
 
 if __name__ == "__main__":

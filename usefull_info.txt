@@ -145,3 +145,23 @@ def load_category_details():
     db.session.add(shoe_d4)
 
     db.session.commit()
+
+
+    cg_id, purchase_at, purchase_price=, sale_price=, quantities=, style, brand, size, material, color
+
+
+    In [9]: vals = ['red', 'blue', 'crayon']
+
+In [10]: for i, value in enumerate(vals):
+    ...:     print i, value
+
+
+    for p in prod:
+   ...:     print p.prd_name
+   ...:     for d in p.prddetail:
+   ...:         print '\t', d.attr_val
+   ...:         
+
+
+csvreader.line_num¶
+

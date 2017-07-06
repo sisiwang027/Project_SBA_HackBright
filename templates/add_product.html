@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+<br><br>
+<form action="/add_product" id="addproduct" method="POST">
+  Add a New product:
+  <br>
+
+  Category:
+  <select id="category">
+    {% for cg in categories %}
+      <option value={{ cg.cg_name }}>{{ cg.cg_name }}</option>
+    {% endfor %}  
+  </select><br>
+
+  Product Name (It's unique for each product.): 
+  <input type="text" name="productname" id="productname" required><br>
+
+  Sale Price:
+  <input type="number" name="saleprice" id="saleprice" required><br>
+
+  Product Description:
+  <input type="text" name="description" id="description" required><br>
+
+  <div calss="input_attrs" id="input_attrs_field">
+    
+    <div calss="input_attrs" id="attr1">
+      Attribute Name 1:
+      <input type="text" name="attrname1" id="attrname1" required>
+      Attribute Value 1:
+      <input type="text" name="attrvalue1" id="attrvalue1" required>
+      <a href="#" class="remove_field">Remove</a>
+    </div><br>
+
+  </div>
+  <button id="addOneAttr" name="Add One More Attribute">Add One More Attribute</button>
+
+    <input type="submit" value="Add Product" name="submit">
+</form>
+
+<script>
+  var numAttr = 1;
+
+  function addOneAttr(evt) {
+    evt.preventDefault();
+
+    numAttr++;
+
+    var attrName = "Attribute Name " + numAttr + ": <input type='text' name='attrname" + 
+                   numAttr + "' id='attrname" + numAttr +"' required>"
+
+    var attrVal = "Attribute Value " + numAttr + ": <input type='text' name='attrvalue" + 
+                   numAttr + "' id='attrvalue" + numAttr +"' required>"
+
+    var attrRemove = "<a href='#' class='remove_field'>Remove</a>"
+    
+    $('#input_attrs_field').append("<div class='input_attrs' id='attr" + numAttr + "'>" 
+                                  + attrName + attrVal + attrRemove +"</div>");
+
+    console.log(numAttr)
+            
+  }
+
+  function removeOneAttr(env) {
+
+    numAttr--;
+
+    $('#input_attrs_field').parent('div').remove()
+
+    console.log(numAttr)
+
+  }
+
+$('#addOneAttr').on('click', addOneAttr);
+$('.remove_field').on('click', removeOneAttr)
+
+</script>
+
+{% endblock %}
+<!doctype html>
