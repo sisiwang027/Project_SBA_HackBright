@@ -28,7 +28,17 @@ def load_csv_product(file):
                 i += 1
                 category_attr = row[4:]
                 # read attributes of category
-                for attr in category_attr:
+                add_attr_to_table(category_attr)
+            else:
+                add_product_to_table(row, category_attr)
+
+        return "Upload successfully!"
+
+
+def add_attr_to_table(attr_list):
+    """add attributes to  table, category_attributes."""
+
+    for attr in attr_list:
                     # add attributes into category_attributes.
                     attr = attr.lower()
                     if CategoryAttribute.query.filter_by(attr_name=attr).first():
@@ -36,10 +46,6 @@ def load_csv_product(file):
                     else:
                         attrs = CategoryAttribute(attr_name=attr)
                         db.session.add(attrs)
-            else:
-                add_product_to_table(row, category_attr)
-
-        return "Upload successfully!"
 
 
 def add_product_to_table(row_list, attr_list):
@@ -88,6 +94,8 @@ def add_product_to_table(row_list, attr_list):
 
     product.prddetail.extend(val_list)
     db.session.commit()
+
+    return "Submit successfully!"
 
 
 def add_category(new_category):

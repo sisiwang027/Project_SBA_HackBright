@@ -7,7 +7,7 @@ from flask import (Flask, render_template, redirect, request, flash,
 from model import (Gender, User, Customer, Category, CategoryAttribute, CategoryDetail,
                    Product, CategoryDetailValue, ProductDetail)
 from model import connect_to_db, db, app
-from loadCSVfile import load_csv_product, add_category
+from loadCSVfile import load_csv_product, add_category, add_product_to_table, add_attr_to_table
 
 app = Flask(__name__)
 
@@ -139,20 +139,44 @@ def add_product_form():
 
     return render_template("add_product.html", categories=categories)
     # render_template("add_product.html", categories)
+    # for cg in categories:
+    #     for attr in cg.cgattribute:
+    #         category_attr.append({"cg_name": cg.cg_name, "attr_name": attr.attr_name})
+
+    # cg[0].cgattribute[0].attributeval[0].attr_val
 
 
 @app.route("/add_product", methods=["POST"])
 def add_product_process():
     """adding category to table categories."""
 
-    category = request.form.get("category")
-    productname = request.form.get("productname")
-    saleprice = request.form.get("saleprice")
-    description == request.form.get("description")
+    attr_val = []
+    attr_name = []
 
-    pass
+    category = request.form.get("cg")
+    productname = request.form.get("pname")
+    saleprice = request.form.get("sprice")
+    description = request.form.get("pdescription")
+    attr_num = request.form.get("attr_num")
 
-    # return add_product_to_table()
+    for i in range(1, int(attr_num) + 1):
+        attr_name.append(request.form.get("attrname" + str(i)))
+        attr_val.append(request.form.get("attrvalue" + str(i)))
+
+    one_product = [productname, category, float(saleprice), description] + attr_val
+
+    print one_product, attr_name
+
+    add_attr_to_table(attr_name)
+
+    return add_product_to_table(one_product, attr_name)
+
+
+@app.route("/show_report")
+def show_report():
+    """show reports"""
+
+    return render_template("reports.html")
 
 
 # @app.route("/upload_sale", methods=["POST"])

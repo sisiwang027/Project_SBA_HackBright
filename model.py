@@ -101,6 +101,9 @@ class CategoryAttribute(db.Model):
     cg_attr_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     attr_name = db.Column(db.String(30), nullable=False, unique=True)
 
+    attributeval = db.relationship("CategoryDetailValue",
+                                   backref="category_attributes")
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -158,7 +161,7 @@ class CategoryDetailValue(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<CategoryDetailValue cg_attr_id={} detail_value={}>".format(self.cg_attr_id, self.detail_val)
+        return "<CategoryDetailValue cg_attr_id={} detail_value={}>".format(self.cg_attr_id, self.attr_val)
 
 
 class ProductDetail(db.Model):
@@ -174,6 +177,43 @@ class ProductDetail(db.Model):
         """Provide helpful representation when printed."""
 
         return "<PurchaseCgDetail p_id={} cg_detailvalue_id={}>".format(self.p_id, self.cg_detailvalue_id)
+
+
+class Purchase(db.Model):
+    """Purchases that users purchased and sale."""
+
+    __tablename__ = "purchases"
+
+    purch_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    prd_id = db.Column(db.Integer, db.ForeignKey('products.prd_id'), nullable=False)
+    purchase_at = db.Column(db.DateTime(), nullable=False)
+    purchase_price = db.Column(db.DECIMAL(10, 2), nullable=False)
+    quantities = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Purchase p_id={} user_id={}>".format(self.p_id, self.user_id)
+
+
+class Sale(db.Model):
+    """Purchases that users purchased and sale."""
+
+    __tablename__ = "sales"
+
+    transc_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    cust_id = db.Column(db.Integer, db.ForeignKey('customers.cust_id'), nullable=False)
+    prd_id = db.Column(db.Integer, db.ForeignKey('products.prd_id'), nullable=False)
+    returned_flag = db.Column(db.Boolean, nullable=False)
+    transc_at = db.Column(db.DateTime(), nullable=False)
+    transc_price = db.Column(db.DECIMAL(10, 2), nullable=False)
+    quantities = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Sale transc_id={} user_id={} cust_id={} prd_id={}>".format(self.transc_id, self.user_id, self.cust_id, self.prd_id)
+
 
 ##############################################################################
 # Helper functions

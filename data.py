@@ -90,26 +90,37 @@ def load_categories():
     db.session.commit()
 
 
-def load_products():
-    """Load products infomation."""
+def load_sales():
+    """Load product sale infomation."""
 
-    pass
+    for i in range(0, 60):
+        sale = Sale(cust_id=random.randint(1, 100),
+                    prd_id=random.randint(1, 44),
+                    returned_flag=False,
+                    transc_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
+                    transc_price=random.randint(50, 150),
+                    quantities=random.randint(1, 5)
+                    )
+
+        db.session.add(sale)
+
+    db.session.commit()
 
 
-def load_category_attributes():
-    """Load category detail names."""
+def load_purchases():
+    """Load purchases infomation."""
 
-    size = CategoryAttribute(detailname='size')
-    color = CategoryAttribute(detailname='color')
-    brand = CategoryAttribute(detailname='brand')
-    material = CategoryAttribute(detailname='material')
-    sub_category = CategoryAttribute(detailname='style')
+    for i in range(0, 123):
 
-    db.session.add(size)
-    db.session.add(color)
-    db.session.add(brand)
-    db.session.add(material)
-    db.session.add(sub_category)
+        purchase_price = random.randint(15, 100) * 1.99
+
+        purchase = Purchase(prd_id=random.randint(1, 44),
+                            purchase_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
+                            purchase_price=purchase_price,
+                            quantities=random.randint(20, 121)
+                            )
+
+        db.session.add(purchase)
 
     db.session.commit()
 
@@ -123,8 +134,8 @@ if __name__ == "__main__":
     load_gendertype()
     load_customers()
     load_categories()
-    # load_purchases()
-    # load_sales()
+    load_purchases()
+    load_sales()
 
     # load_category_detailname()
     # load_category_detail_values()
@@ -138,39 +149,26 @@ if __name__ == "__main__":
 #save for later
 #################
 
-# def load_sales():
-#     """Load product sale infomation."""
+# def load_products():
+#     """Load products infomation."""
 
-#     for i in range(0, 60):
-#         sale = Sale(user_id=1,
-#                     cust_id=random.randint(1, 100),
-#                     prd_id=random.randint(1, 44),
-#                     returned_flag=False,
-#                     transc_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
-#                     transc_price=random.randint(50, 150),
-#                     quantities=random.randint(1, 5)
-#                     )
-
-#         db.session.add(sale)
-
-#     db.session.commit()
+#     pass
 
 
-# def load_purchases():
-#     """Load purchases infomation."""
+# def load_category_attributes():
+#     """Load category detail names."""
 
-#     for i in range(0, 123):
+#     size = CategoryAttribute(detailname='size')
+#     color = CategoryAttribute(detailname='color')
+#     brand = CategoryAttribute(detailname='brand')
+#     material = CategoryAttribute(detailname='material')
+#     sub_category = CategoryAttribute(detailname='style')
 
-#         purchase_price = random.randint(15, 100) * 1.99
-
-#         purchase = Purchase(user_id=1,
-#                             prd_id=random.randint(1, 44),
-#                             purchase_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
-#                             purchase_price=purchase_price,
-#                             quantities=random.randint(20, 121)
-#                             )
-
-#         db.session.add(purchase)
+#     db.session.add(size)
+#     db.session.add(color)
+#     db.session.add(brand)
+#     db.session.add(material)
+#     db.session.add(sub_category)
 
 #     db.session.commit()
 
