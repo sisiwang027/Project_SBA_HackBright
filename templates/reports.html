@@ -5,10 +5,13 @@
 
 {% if session.get("user_id") %}
 <h2>Reports</h2>
+<div id="report"> </div>
 
-
+{{ table|safe }}
 
 {% endif %}
+
+
 
 
 {% endblock %}

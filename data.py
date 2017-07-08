@@ -2,7 +2,7 @@
 
 
 from model import (Gender, User, Customer, Category, CategoryAttribute, CategoryDetail,
-                   Product, CategoryDetailValue, ProductDetail)
+                   Product, CategoryDetailValue, ProductDetail, Purchase, Sale)
 from model import connect_to_db, db, app
 from faker import Faker
 from datetime import timedelta
@@ -128,12 +128,12 @@ def load_purchases():
 if __name__ == "__main__":
     connect_to_db(app)
     # db.drop_all()
-    db.create_all()
+    # db.create_all()
 
-    load_users()
-    load_gendertype()
-    load_customers()
-    load_categories()
+    # load_users()
+    # load_gendertype()
+    # load_customers()
+    # load_categories()
     load_purchases()
     load_sales()
 

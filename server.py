@@ -8,6 +8,7 @@ from model import (Gender, User, Customer, Category, CategoryAttribute, Category
                    Product, CategoryDetailValue, ProductDetail)
 from model import connect_to_db, db, app
 from loadCSVfile import load_csv_product, add_category, add_product_to_table, add_attr_to_table
+from report import show_table
 
 app = Flask(__name__)
 
@@ -176,7 +177,9 @@ def add_product_process():
 def show_report():
     """show reports"""
 
-    return render_template("reports.html")
+    table = show_table()
+
+    return render_template("reports.html", table=table)
 
 
 # @app.route("/upload_sale", methods=["POST"])

@@ -193,7 +193,7 @@ class Purchase(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<Purchase p_id={} user_id={}>".format(self.p_id, self.user_id)
+        return "<Purchase purch_id={} prd_id={}>".format(self.purch_id, self.prd_id)
 
 
 class Sale(db.Model):
