@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+{% if session.get("user_id") %}
+
+<div class="container">
+  <h2>Purchases Infomation</h2><br>
+  <h4>Product: {{ product.prd_name }}</h4>
+  <h4>Total Purchase Price: {{ total_pur_price[0] }}</h4>
+             
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Price</th>
+        <th>Quantities</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      
+      
+      {% for purchase in purchases %}
+        <tr>
+          <td>{{ purchase.purchase_at }}</td>
+          <td>{{ purchase.purchase_price }}</td>
+          <td>{{ purchase.quantities }}</td>
+        </tr>
+
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+</div>
+
+<a href="/product">Back</a>
+
+
+{% endif %}
+
+
+
+
+{% endblock %}

@@ -101,8 +101,6 @@ class CategoryAttribute(db.Model):
     cg_attr_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     attr_name = db.Column(db.String(30), nullable=False, unique=True)
 
-    attributeval = db.relationship("CategoryDetailValue",
-                                   backref="category_attributes")
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -143,6 +141,9 @@ class Product(db.Model):
                                 secondary="product_details",
                                 backref="products")
 
+    prdcg = db.relationship("Category",
+                            backref="products")
+
     def __reper__(self):
         """Provide helpful representation when printed."""
 
@@ -157,6 +158,9 @@ class CategoryDetailValue(db.Model):
     cg_detailvalue_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     cg_attr_id = db.Column(db.Integer, db.ForeignKey('category_attributes.cg_attr_id'))
     attr_val = db.Column(db.String(80), nullable=False)
+
+    attributeval = db.relationship("CategoryAttribute",
+                                   backref="category_detail_values")
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -190,6 +194,9 @@ class Purchase(db.Model):
     purchase_price = db.Column(db.DECIMAL(10, 2), nullable=False)
     quantities = db.Column(db.Integer, nullable=False)
 
+    purchasePrd = db.relationship("Product",
+                                  backref="purchases")
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -208,6 +215,12 @@ class Sale(db.Model):
     transc_at = db.Column(db.DateTime(), nullable=False)
     transc_price = db.Column(db.DECIMAL(10, 2), nullable=False)
     quantities = db.Column(db.Integer, nullable=False)
+
+    salePrd = db.relationship("Product",
+                              backref="sales")
+
+    custs = db.relationship("Customer",
+                            backref="sales")
 
     def __repr__(self):
         """Provide helpful representation when printed."""

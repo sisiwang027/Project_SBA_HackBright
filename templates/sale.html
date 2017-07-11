@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+{% if session.get("user_id") %}
+
+<div class="container">
+  <h2>Sales Infomation</h2><br>
+  <h4>Product: {{ product.prd_name }}</h4>
+             
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Is Returned</th>
+        <th>Time</th>
+        <th>Price</th>
+        <th>Quantities</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      {% for sale in sales %}
+        <tr>
+          <td>{{ sale.custs.first_name }} {{ sale.custs.last_name }}</td>
+          <td>
+            {% if sale.returned_flag == False %} 
+              No
+            {% else %} 
+              Yes
+            {% endif %}
+          </td>
+          <td>{{ sale.transc_at }}</td>
+          <td>{{ sale.transc_price }}</td>
+          <td>{{ sale.quantities }}</td>
+        </tr>
+
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+</div>
+
+<a href="/product">Back</a>
+
+
+{% endif %}
+
+
+
+
+{% endblock %}

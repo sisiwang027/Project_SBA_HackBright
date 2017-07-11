@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+{% if session.get("user_id") %}
+
+<div class="container">
+  <h2>Products</h2><br>
+  <h4>Product: {{ product.prd_name }}</h4>
+             
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Attribute Name</th>
+        <th>Attribute Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      
+      
+      {% for prd_detail in prd_details %}
+        <tr>
+          <td>{{ prd_detail.attributeval.attr_name }}</td>
+          <td>{{ prd_detail.attr_val }}</td>
+        </tr>
+
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+</div>
+
+<a href="/product">Back</a>
+
+
+{% endif %}
+
+
+
+
+{% endblock %}

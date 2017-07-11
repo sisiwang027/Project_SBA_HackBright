@@ -5,10 +5,11 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask import (Flask, render_template, redirect, request, flash,
                    session, jsonify, url_for, send_from_directory)
 from model import (Gender, User, Customer, Category, CategoryAttribute, CategoryDetail,
-                   Product, CategoryDetailValue, ProductDetail)
+                   Product, CategoryDetailValue, ProductDetail, Sale, Purchase)
 from model import connect_to_db, db, app
 from loadCSVfile import load_csv_product, add_category, add_product_to_table, add_attr_to_table
-from report import show_table
+from report import show_table, show_test_table
+from sqlalchemy.sql import func
 
 app = Flask(__name__)
 
@@ -179,29 +180,57 @@ def show_report():
 
     table = show_table()
 
-    return render_template("reports.html", table=table)
+    return render_template("report.html", table=table)
 
 
-# @app.route("/upload_sale", methods=["POST"])
-# def upload_sale():
-#     """Upload sale transactions."""
+@app.route("/product")
+def show_product():
+    """show products"""
 
-#     pass
+    user_id = session.get("user_id")
+
+    products = Product.query.filter_by(user_id=user_id).all()
+
+    return render_template("product.html", products=products)
 
 
-# @app.route("/upload_category", methods=["POST"])
-# def upload_category():
-#     """Upload category information."""
+@app.route("/product_detail/<int:prd_id>", methods=['GET'])
+def show_product_detail(prd_id):
+    """Show details of movie."""
 
-#     pass
+    product = Product.query.get(prd_id)
+
+    prd_details = product.prddetail
+
+    return render_template("product_detail.html", prd_details=prd_details, product=product)
+
+
+@app.route("/purchase/<int:prd_id>", methods=['GET'])
+def show_purchase(prd_id):
+    """Show details of movie."""
+
+    product = Product.query.get(prd_id)
+
+    purchases = product.purchases
+
+    total_pur_price = db.session.query(func.sum(Purchase.purchase_price).label("total")).filter(Product.prd_id == 1).one()
+
+    return render_template("purchase.html", purchases=purchases, product=product, total_pur_price=total_pur_price)
+
+
+@app.route("/sale/<int:prd_id>", methods=['GET'])
+def show_sale(prd_id):
+    """Show details of movie."""
+
+    product = Product.query.get(prd_id)
+
+    sales = product.sales
+
+    return render_template("sale.html", sales=sales, product=product)
+
 
 ###########################################################################
 #useful functon
-
-
-
-
-
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension

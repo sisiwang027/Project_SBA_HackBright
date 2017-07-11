@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+{% if session.get("user_id") %}
+
+
+<div class="container">
+  <h2>Products</h2><br>
+  <p><a href="/add_product">Add Products</a></p>
+             
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Category</th>
+        <th>Sale Price</th>
+        <th>Description</th>
+        <th>Product Info</th>
+        <th>Purchase Info</th>
+        <th>Sale Info</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      
+      
+      {% for product in products %}
+        <tr>
+          <td>{{ product.prd_name }}</td>
+          <td>{{ product.prdcg.cg_name }}</td>
+          <td>{{ product.sale_price }}</td>
+          <td>{{ product.description }}</td>
+          <td><a href="/product_detail/{{ product.prd_id }}">see details</a></td>
+          <td><a href="/purchase/{{ product.prd_id }}">see purchases</a></td>
+          <td><a href="/sale/{{ product.prd_id }}">see sales</a></td>
+        </tr>
+
+      {% endfor %}
+
+    </tbody>
+  </table>
+</div>
+
+<button id="myBtn" title="Go to top">Top</button>
+
+<script>
+// When the user clicks on the button, scroll to the top of the document
+  function topFunction() {
+      document.body.scrollTop = 0; // For Chrome, Safari and Opera 
+      document.documentElement.scrollTop = 0; // For IE and Firefox
+  }
+
+  $("#myBtn").on('click', topFunction) 
+</script>
+
+
+{% endif %}
+
+
+
+
+{% endblock %}

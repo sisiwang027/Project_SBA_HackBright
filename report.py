@@ -36,6 +36,15 @@ def show_pie():
     
     return df.to_html()
 
+
+def show_test_table():
+    sql = "select * from prd_test"
+    cursor = db.session.execute(sql)
+    df = pd.DataFrame(cursor.fetchall())
+
+    return df.to_html()
+    
+
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
