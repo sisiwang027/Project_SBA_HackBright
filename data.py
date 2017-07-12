@@ -150,6 +150,15 @@ if __name__ == "__main__":
 #save for later
 #################
 
+# CREATE VIEW product_sum AS
+#   SELECT p.prd_id, p.user_id, p.prd_name, p.cg_id, c.cg_name, p.sale_price,
+#   p.description, coalesce(purc.purc_qty, 0) purc_qty, coalesce(purc.purc_cost, 0) purc_cost,
+#          coalesce(s.sale_qty, 0) sale_qty, coalesce(s.revenue, 0) revennue
+#     FROM products AS p
+#        LEFT JOIN (select prd_id, SUM(quantities) purc_qty, SUM(purchase_price * quantities) purc_cost FROM purchases GROUP BY prd_id) AS purc ON  p.prd_id = purc.prd_id
+#        LEFT JOIN (SELECT prd_id, SUM(quantities) sale_qty, SUM(quantities * transc_price) revenue FROM sales GROUP BY prd_id) AS s ON p.prd_id = s.prd_id
+#        LEFT JOIN categories c ON p.cg_id=c.cg_id;
+
 # def load_products():
 #     """Load products infomation."""
 

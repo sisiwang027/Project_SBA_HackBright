@@ -18,8 +18,8 @@
         <th>Sale Price</th>
         <th>Description</th>
         <th>Product Info</th>
-        <th>Purchase Info</th>
-        <th>Sale Info</th>
+        <th>Purchase Qty</th>
+        <th>Sale Qty</th>
 
       </tr>
     </thead>
@@ -28,13 +28,13 @@
       
       {% for product in products %}
         <tr>
-          <td>{{ product.prd_name }}</td>
-          <td>{{ product.prdcg.cg_name }}</td>
-          <td>{{ product.sale_price }}</td>
-          <td>{{ product.description }}</td>
-          <td><a href="/product_detail/{{ product.prd_id }}">see details</a></td>
-          <td><a href="/purchase/{{ product.prd_id }}">see purchases</a></td>
-          <td><a href="/sale/{{ product.prd_id }}">see sales</a></td>
+          <td>{{ product.Product.prd_name }}</td>
+          <td>{{ product.Product.prdcg.cg_name }}</td>
+          <td>{{ product.Product.sale_price }}</td>
+          <td>{{ product.Product.description }}</td>
+          <td><a href="/product_detail/{{ product.Product.prd_id }}">see details</a></td>
+          <td><a href="/purchase/{{ product.Product.prd_id }}">{{ product.pur_qty }}</a></td>
+          <td><a href="/sale/{{ product.Product.prd_id }}">{{ product.sale_qty }}</a></td>
         </tr>
 
       {% endfor %}

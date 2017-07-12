@@ -9,7 +9,7 @@ from model import (Gender, User, Customer, Category, CategoryAttribute, Category
 from model import connect_to_db, db, app
 from loadCSVfile import load_csv_product, add_category, add_product_to_table, add_attr_to_table
 from report import show_table, show_test_table
-from sqlalchemy.sql import func
+from sqlalchemy.sql.functions import coalesce
 
 app = Flask(__name__)
 
@@ -189,7 +189,11 @@ def show_product():
 
     user_id = session.get("user_id")
 
-    products = Product.query.filter_by(user_id=user_id).all()
+    #products = Product.query.filter_by(user_id=user_id).all()
+
+    products = db.session.query(Product, db.func.sum(coalesce(Purchase.quantities, 0)).label("pur_qty"),
+                                db.func.sum(coalesce(Sale.quantities, 0))
+                                .label("sale_qty")).outerjoin(Purchase).outerjoin(Sale).filter(Product.user_id == user_id).group_by(Product.prd_id).all()
 
     return render_template("product.html", products=products)
 
@@ -213,7 +217,7 @@ def show_purchase(prd_id):
 
     purchases = product.purchases
 
-    total_pur_price = db.session.query(func.sum(Purchase.purchase_price).label("total")).filter(Product.prd_id == 1).one()
+    total_pur_price = db.session.query(db.func.sum(Purchase.purchase_price).label("total")).filter(Product.prd_id == 1).one()
 
     return render_template("purchase.html", purchases=purchases, product=product, total_pur_price=total_pur_price)
 
@@ -228,6 +232,14 @@ def show_sale(prd_id):
 
     return render_template("sale.html", sales=sales, product=product)
 
+
+@app.route("/product_sum")
+def show_product_sum():
+    """Show sumarizing information of products."""
+
+    products = db.session.query(Product, Category.cg_name).join(Category).join(Product.prddetail).filter(CategoryDetailValue.attr_val == 'gap').group_by(Product, Category.cg_name).all()
+
+    return render_template("produnct_sum.html", products=products)
 
 ###########################################################################
 #useful functon
