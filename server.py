@@ -10,6 +10,8 @@ from model import connect_to_db, db, app
 from loadCSVfile import load_csv_product, add_category, add_product_to_table, add_attr_to_table
 from report import show_table, show_test_table
 from sqlalchemy.sql.functions import coalesce
+from dateutil.relativedelta import relativedelta
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -189,11 +191,9 @@ def show_product():
 
     user_id = session.get("user_id")
 
-    #products = Product.query.filter_by(user_id=user_id).all()
+    purch = db.session.query(Product.prd_id, Product.user_id, Product.prd_name, Product.cg_id, Category.cg_name, Product.sale_price, Product.description, db.func.sum(coalesce(Purchase.quantities, 0)).label("purch_qty"), db.func.sum(coalesce(Purchase.quantities * Purchase.purchase_price, 0)).label("purch_price_sum")).outerjoin(Purchase).outerjoin(Category).filter(Product.user_id == user_id).group_by(Product.prd_id, Product.user_id, Product.prd_name, Product.cg_id, Category.cg_name, Product.sale_price, Product.description).order_by(Product.prd_id).subquery()
 
-    products = db.session.query(Product, db.func.sum(coalesce(Purchase.quantities, 0)).label("pur_qty"),
-                                db.func.sum(coalesce(Sale.quantities, 0))
-                                .label("sale_qty")).outerjoin(Purchase).outerjoin(Sale).filter(Product.user_id == user_id).group_by(Product.prd_id).all()
+    products = db.session.query(purch.c.prd_id, purch.c.user_id, purch.c.prd_name, purch.c.cg_id, purch.c.cg_name, purch.c.sale_price, purch.c.description, purch.c.purch_qty, purch.c.purch_price_sum, db.func.sum(coalesce(Sale.quantities, 0)).label("sale_qty"), db.func.sum(coalesce(Sale.quantities * Sale.transc_price, 0)).label("sale_price_sum")).outerjoin(Sale, purch.c.prd_id == Sale.prd_id).group_by(purch.c.prd_id, purch.c.user_id, purch.c.prd_name, purch.c.cg_id, purch.c.cg_name, purch.c.sale_price, purch.c.description, purch.c.purch_qty, purch.c.purch_price_sum).order_by(purch.c.prd_id).all()
 
     return render_template("product.html", products=products)
 
@@ -237,9 +237,45 @@ def show_sale(prd_id):
 def show_product_sum():
     """Show sumarizing information of products."""
 
-    products = db.session.query(Product, Category.cg_name).join(Category).join(Product.prddetail).filter(CategoryDetailValue.attr_val == 'gap').group_by(Product, Category.cg_name).all()
+    user_id = session.get("user_id")
 
-    return render_template("produnct_sum.html", products=products)
+    month_num = 12
+    set_date = datetime.now().date() - relativedelta(months = month_num)
+
+    purch = db.session.query(Purchase.prd_id, db.func.sum(coalesce(Purchase.quantities, 0)).label("purch_qty"), db.func.sum(coalesce(Purchase.quantities * Purchase.purchase_price, 0)).label("purch_price_sum")).filter(Purchase.purchase_at >= set_date).group_by(Purchase.prd_id).subquery()
+
+    sale = db.session.query(Sale.prd_id, db.func.sum(coalesce(Sale.quantities, 0)).label("sale_qty"), db.func.sum(coalesce(Sale.quantities * Sale.transc_price, 0)).label("sale_price_sum")).filter(Sale.transc_at >= set_date).group_by(Sale.prd_id).subquery()
+
+    prod = db.session.query(Product.prd_id, Product.cg_id, Category.cg_name).join(Category).join(Product.prddetail).filter(CategoryDetailValue.attr_val == 'gap', Product.user_id == user_id).group_by(Product.prd_id, Product.cg_id, Category.cg_name).subquery()
+
+    product_sum = db.session.query(prod.c.cg_name, db.func.sum(purch.c.purch_qty).label("purch_qty_sum"), db.func.sum(purch.c.purch_price_sum).label("purch_price_sum"), db.func.sum(purch.c.purch_qty - sale.c.sale_qty).label("purch_onhand_qty"), db.func.sum(db.func.round(purch.c.purch_price_sum / purch.c.purch_qty * (purch.c.purch_qty - sale.c.sale_qty), 2)).label("purch_onhand_cost"), db.func.sum(sale.c.sale_qty).label("sale_qty"), db.func.sum(sale.c.sale_price_sum).label("sale_price_sum")).join(purch, prod.c.prd_id == purch.c.prd_id).join(sale, prod.c.prd_id == sale.c.prd_id).group_by(prod.c.cg_name).all()
+
+    return render_template("product_sum.html", product_sum=product_sum)
+
+
+@app.route("/sale_sum")
+def show_sale_sum():
+    """Show sumarizing information of sales."""
+
+    user_id = session.get("user_id")
+
+    month_num = request.args.get("months")
+
+    if not month_num:
+        month_num = 12
+
+    set_date = datetime.now().date() - relativedelta(months=month_num)
+    sale = db.session.query(db.func.date_part('year', Sale.transc_at).label("year_at"), db.func.date_part('month', Sale.transc_at).label("month_at"), Sale.prd_id, db.func.sum(Sale.transc_price * Sale.quantities).label("revenue"), db.func.sum(Sale.quantities).label("sale_qty")).filter(Sale.transc_at >= set_date).group_by(db.func.date_part('year', Sale.transc_at).label("year_at"), db.func.date_part('month', Sale.transc_at).label("month_at"), Sale.prd_id).subquery()
+
+    attr_list = ['gap', 'nike']
+    purch_cost = db.session.query(Purchase.prd_id, db.func.round(db.func.sum(Purchase.purchase_price * Purchase.quantities) / db.func.sum(Purchase.quantities), 2).label("avg_purch_cost")).group_by(Purchase.prd_id).subquery()
+
+    prod = db.session.query(Product.prd_id, Product.cg_id, Category.cg_name).join(Category).join(Product.prddetail).filter(CategoryDetailValue.attr_val.in_(attr_list), Product.user_id == user_id).group_by(Product.prd_id, Product.cg_id, Category.cg_name).subquery()
+
+    sale_sum = db.session.query(db.func.round(sale.c.year_at).label("year_at"), db.func.round(sale.c.month_at).label("month_at"), prod.c.cg_name, db.func.sum(sale.c.sale_qty).label("sale_qty"), db.func.sum(sale.c.revenue).label("revenue"), db.func.sum(sale.c.revenue - purch_cost.c.avg_purch_cost * sale.c.sale_qty).label("profit")).join(purch_cost, sale.c.prd_id == purch_cost.c.prd_id).join(prod, sale.c.prd_id == prod.c.prd_id).group_by(db.func.round(sale.c.year_at).label("year_at"), db.func.round(sale.c.month_at).label("month_at"), prod.c.cg_name).order_by(db.func.round(sale.c.year_at).label("year_at"), db.func.round(sale.c.month_at).label("month_at"), prod.c.cg_name).all()
+
+    return render_template("sale_sum.html", sale_sum=sale_sum)
+
 
 ###########################################################################
 #useful functon

@@ -28,13 +28,13 @@
       
       {% for product in products %}
         <tr>
-          <td>{{ product.Product.prd_name }}</td>
-          <td>{{ product.Product.prdcg.cg_name }}</td>
-          <td>{{ product.Product.sale_price }}</td>
-          <td>{{ product.Product.description }}</td>
-          <td><a href="/product_detail/{{ product.Product.prd_id }}">see details</a></td>
-          <td><a href="/purchase/{{ product.Product.prd_id }}">{{ product.pur_qty }}</a></td>
-          <td><a href="/sale/{{ product.Product.prd_id }}">{{ product.sale_qty }}</a></td>
+          <td>{{ product.prd_name }}</td>
+          <td>{{ product.cg_name }}</td>
+          <td>{{ product.sale_price }}</td>
+          <td>{{ product.description }}</td>
+          <td><a href="/product_detail/{{ product.prd_id }}">see details</a></td>
+          <td><a href="/purchase/{{ product.prd_id }}">Qty:{{ product.purch_qty }} Total:{{ product.purch_price_sum }}</a></td>
+          <td><a href="/sale/{{ product.prd_id }}">Qty:{{ product.sale_qty }} Total:{{ product.sale_price_sum}}</a></td>
         </tr>
 
       {% endfor %}
