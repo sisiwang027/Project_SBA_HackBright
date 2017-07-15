@@ -95,13 +95,23 @@ def load_sales():
 
     for i in range(0, 60):
         sale = Sale(cust_id=random.randint(1, 100),
-                    prd_id=random.randint(1, 44),
+                    prd_id=random.randint(1, 30),
                     returned_flag=False,
                     transc_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
-                    transc_price=random.randint(50, 150),
+                    transc_price=random.randint(65, 80),
                     quantities=random.randint(1, 5)
                     )
 
+        db.session.add(sale)
+
+    for i in range(0, 60):
+        sale = Sale(cust_id=random.randint(1, 100),
+                    prd_id=random.randint(31, 44),
+                    returned_flag=False,
+                    transc_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
+                    transc_price=random.randint(160, 180),
+                    quantities=random.randint(1, 5)
+                    )
         db.session.add(sale)
 
     db.session.commit()
@@ -110,14 +120,26 @@ def load_sales():
 def load_purchases():
     """Load purchases infomation."""
 
-    for i in range(0, 123):
+    for i in range(0, 66):
 
-        purchase_price = random.randint(15, 100) * 1.99
+        purchase_price = random.randint(40, 50) * 0.99
 
-        purchase = Purchase(prd_id=random.randint(1, 44),
+        purchase = Purchase(prd_id=random.randint(1, 30),
                             purchase_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
                             purchase_price=purchase_price,
-                            quantities=random.randint(20, 121)
+                            quantities=random.randint(20, 88)
+                            )
+
+        db.session.add(purchase)
+
+    for i in range(0, 66):
+
+        purchase_price = random.randint(100, 110) *0.99
+
+        purchase = Purchase(prd_id=random.randint(31, 44),
+                            purchase_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
+                            purchase_price=purchase_price,
+                            quantities=random.randint(20, 40)
                             )
 
         db.session.add(purchase)

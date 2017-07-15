@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+{% if session.get("user_id") %}
+
+<form id = "month_filter">
+<div class="container">
+  <h2>Sale Sum Information</h2><br>
+  
+ 
+  show the past <input type="number" name="months" id="months" required>months data
+  <input type="submit" value="Submit" name="submit">
+  
+  <p><a href="/product" >Sale Details of Each Product</a></p>
+
+  
+      {% raw %}
+        <script id="sale_sum_report" type="text/x-handlebars-template">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Category</th>
+                <th>Total Sale Qty</th>
+                <th>Revenue</th>
+                <th>Profit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each result}}
+                <!-- Here the context is each row. So we can access its properties directly: -->     
+                <tr>
+                  <td>{{ sale_at }}</td>
+                  <td>{{ cg_name }}</td>
+                  <td>{{ sale_qty }}</td>
+                  <td>{{ revenue }}</td>
+                  <td>{{ profit }}  </td>
+                  
+                </tr> 
+              {{/each}}
+            </tbody>
+          </table>  
+        </script>
+      {% endraw %}
+</div>
+
+</form>
+
+
+{% endif %}
+
+<script>
+  function showData (report_json) {
+    // show the result of submiting form.
+    var tableScrip = $("#sale_sum_report").html();
+    var theTemplate = Handlebars.compile(tableScrip);
+
+    var context = report_json
+
+    //{"result":[{"sale_at":201404, "cg_name":"clothing", "sale_qty":33, "revenue":22, "profit":33 }]}
+
+    var theCompiledHtml = theTemplate(context);
+
+    $(".container").append(theCompiledHtml);
+
+  }
+
+
+  function getInfo(evt) {
+     // get infomation of form 
+    // prevent change to some-script, and show the text by alerting.
+    evt.preventDefault();
+
+    var formInput = {"months": $("#months").val()};
+
+    $.get("/sale_sum.json", formInput, showData);
+  }
+
+
+  $("#month_filter").on("submit", getInfo);
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,73 @@
+s{% extends 'base.html' %}
+{% block content %}
+
+
+
+{% if session.get("user_id") %}
+
+ <form id = "month_filter">
+<div class="container">
+  <h2>Sale Sum Information</h2><br>
+  
+ 
+  show the past <input type="number" name="months" id="months" required>months data
+  <input type="submit" value="Submit" name="submit">
+  
+  <p><a href="/product" >Sale Details of Each Product</a></p>
+
+             
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Category</th>
+        <th>Total Sale Qty</th>
+        <th>Revenue</th>
+        <th>Profit</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      {% for item in sale_sum %}
+        <tr>
+          <td>{{ item.sale_at }}</td>
+          <td>{{ item.cg_name }}</td>
+          <td>{{ item.sale_qty }}</td>
+          <td>{{ item.revenue }}</td>
+          <td>{{ item.profit }}</td>
+        </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+</div>
+
+</form>
+
+
+{% endif %}
+
+<script>
+  function showData () {
+    // show the result of submiting form.
+
+    alert("test");
+  }
+
+  function getInfo(evt) {
+     // get infomation of form 
+    // prevent change to some-script, and show the text by alerting.
+    evt.preventDefault();
+
+    var formInput = {"months": $("#months").val()};
+
+    $.get("/sale_sum", formInput, showData);
+  }
+
+
+  $("#month_filter").on("submit", getInfo);
+
+</script>
+
+
+{% endblock %}

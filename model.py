@@ -132,7 +132,7 @@ class Product(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     prd_name = db.Column(db.String(80))
     cg_id = db.Column(db.Integer, db.ForeignKey('categories.cg_id'), nullable=False)
-    sale_price = db.Column(db.DECIMAL(10, 2), nullable=False)
+    sale_price = db.Column(db.Float, nullable=False)
     description = db.Column(db.String(256))
 
     __table_args__ = (UniqueConstraint('user_id', 'prd_name', name='_user_product'),)
@@ -191,7 +191,7 @@ class Purchase(db.Model):
     purch_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     prd_id = db.Column(db.Integer, db.ForeignKey('products.prd_id'), nullable=False)
     purchase_at = db.Column(db.DateTime(), nullable=False)
-    purchase_price = db.Column(db.DECIMAL(10, 2), nullable=False)
+    purchase_price = db.Column(db.Float, nullable=False)
     quantities = db.Column(db.Integer, nullable=False)
 
     purchasePrd = db.relationship("Product",
@@ -213,7 +213,7 @@ class Sale(db.Model):
     prd_id = db.Column(db.Integer, db.ForeignKey('products.prd_id'), nullable=False)
     returned_flag = db.Column(db.Boolean, nullable=False)
     transc_at = db.Column(db.DateTime(), nullable=False)
-    transc_price = db.Column(db.DECIMAL(10, 2), nullable=False)
+    transc_price = db.Column(db.Float, nullable=False)
     quantities = db.Column(db.Integer, nullable=False)
 
     salePrd = db.relationship("Product",
