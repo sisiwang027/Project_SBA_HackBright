@@ -8,6 +8,7 @@ from model import (Gender, User, Customer, Category, CategoryAttribute, Category
                    Product, CategoryDetailValue, ProductDetail, Sale, Purchase)
 from model import connect_to_db, db, app
 from loadCSVfile import load_csv_product, add_category, add_product_to_table, add_attr_to_table
+from report_result import show_sal_qtychart_json, sale_sum_report, prod_sum_report, show_sal_revenuechart_json, show_sal_profitchart_json, show_prodchart_json, prod_sum_report, show_top10_prod_json
 from report import show_table, show_test_table
 from sqlalchemy.sql.functions import coalesce
 from dateutil.relativedelta import relativedelta
@@ -218,7 +219,8 @@ def show_purchase(prd_id):
 
     purchases = product.purchases
 
-    total_pur_price = db.session.query(db.func.sum(Purchase.purchase_price).label("total")).filter(Product.prd_id == 1).one()
+    total_pur_price = db.session.query(db.func.sum(Purchase.purchase_price).label("total"))\
+                                .filter(Product.prd_id == 1).one()
 
     return render_template("purchase.html", purchases=purchases, product=product, total_pur_price=total_pur_price)
 
@@ -240,18 +242,52 @@ def show_product_sum():
 
     user_id = session.get("user_id")
 
-    month_num = 12
-    set_date = datetime.now().date() - relativedelta(months = month_num)
+    return render_template("product_sum.html")
 
-    purch = db.session.query(Purchase.prd_id, db.func.sum(coalesce(Purchase.quantities, 0)).label("purch_qty"), db.func.sum(coalesce(Purchase.quantities * Purchase.purchase_price, 0)).label("purch_price_sum")).filter(Purchase.purchase_at >= set_date).group_by(Purchase.prd_id).subquery()
 
-    sale = db.session.query(Sale.prd_id, db.func.sum(coalesce(Sale.quantities, 0)).label("sale_qty"), db.func.sum(coalesce(Sale.quantities * Sale.transc_price, 0)).label("sale_price_sum")).filter(Sale.transc_at >= set_date).group_by(Sale.prd_id).subquery()
+@app.route("/product_sum.json", methods=['GET'])
+def sent_product_sum():
+    """Show sumarizing information of sales."""
 
-    prod = db.session.query(Product.prd_id, Product.cg_id, Category.cg_name).join(Category).join(Product.prddetail).filter(CategoryDetailValue.attr_val == 'gap', Product.user_id == user_id).group_by(Product.prd_id, Product.cg_id, Category.cg_name).subquery()
+    user_id = session.get("user_id")
 
-    product_sum = db.session.query(prod.c.cg_name, db.func.sum(purch.c.purch_qty).label("purch_qty_sum"), db.func.sum(purch.c.purch_price_sum).label("purch_price_sum"), db.func.sum(purch.c.purch_qty - sale.c.sale_qty).label("purch_onhand_qty"), db.func.sum(db.func.round(purch.c.purch_price_sum / purch.c.purch_qty * (purch.c.purch_qty - sale.c.sale_qty), 2)).label("purch_onhand_cost"), db.func.sum(sale.c.sale_qty).label("sale_qty"), db.func.sum(sale.c.sale_price_sum).label("sale_price_sum")).join(purch, prod.c.prd_id == purch.c.prd_id).join(sale, prod.c.prd_id == sale.c.prd_id).group_by(prod.c.cg_name).all()
+    month_num = request.args.get("months")
 
-    return render_template("product_sum.html", product_sum=product_sum)
+    attr_list = ['gap', 'nike']
+
+    result = prod_sum_report(user_id, attr_list, month_num)
+
+    return jsonify(result)
+
+
+@app.route('/prod_pichart.json')
+def show_product_chart():
+    """Return sale quantities data as json."""
+
+    user_id = session.get("user_id")
+
+    month_num = request.args.get("months")
+
+    attr_list = ['gap', 'nike']
+
+    data_dict = show_prodchart_json(user_id, month_num, attr_list)
+
+    return jsonify(data_dict)
+
+
+@app.route('/top_prod_barchart.json')
+def show_topproduct_chart():
+    """Return sale quantities data as json."""
+
+    user_id = session.get("user_id")
+
+    month_num = request.args.get("months")
+
+    attr_list = ['gap', 'nike']
+
+    data_dict = show_top10_prod_json(user_id, month_num, attr_list)
+
+    return jsonify(data_dict)
 
 
 @app.route("/sale_sum")
@@ -259,10 +295,6 @@ def show_sale_sum():
     """Show sumarizing information of sales."""
 
     user_id = session.get("user_id")
-
-    # month_num = request.args.get("months")
-
-    #sale_sum = display_salesum_json(12, ['gap', 'nike'], user_id)
 
     return render_template("sale_sum.html")
 
@@ -277,49 +309,59 @@ def sent_sale_sum():
 
     attr_list = ['gap', 'nike']
 
-    result = {}
-
-    set_date = datetime.now().date() - relativedelta(months=month_num)
-    sale = db.session.query(db.func.date_part('year', Sale.transc_at).label("year_at"), db.func.date_part('month', Sale.transc_at).label("month_at"), Sale.prd_id, db.func.sum(Sale.transc_price * Sale.quantities).label("revenue"), db.func.sum(Sale.quantities).label("sale_qty")).filter(Sale.transc_at >= set_date).group_by(db.func.date_part('year', Sale.transc_at).label("year_at"), db.func.date_part('month', Sale.transc_at).label("month_at"), Sale.prd_id).subquery()
-
-    purch_cost = db.session.query(Purchase.prd_id, (db.func.sum(Purchase.purchase_price * Purchase.quantities) / db.func.sum(Purchase.quantities)).label("avg_purch_cost")).group_by(Purchase.prd_id).subquery()
-
-    prod = db.session.query(Product.prd_id, Product.cg_id, Category.cg_name).join(Category).join(Product.prddetail).filter(CategoryDetailValue.attr_val.in_(attr_list), Product.user_id == user_id).group_by(Product.prd_id, Product.cg_id, Category.cg_name).subquery()
-
-    sale_sum = db.session.query((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name, db.func.sum(db.func.round(sale.c.sale_qty)).label("sale_qty"), db.func.sum(sale.c.revenue).label("revenue"), db.func.sum(sale.c.revenue - purch_cost.c.avg_purch_cost * sale.c.sale_qty).label("profit")).join(purch_cost, sale.c.prd_id == purch_cost.c.prd_id).join(prod, sale.c.prd_id == prod.c.prd_id).group_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name).order_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name)
-
-    column_name = [column["name"] for column in sale_sum.column_descriptions]
-
-    result["result"] = [dict(zip(column_name, data)) for data in sale_sum]
+    result = sale_sum_report(user_id, attr_list, month_num)
 
     return jsonify(result)
 
+
+@app.route('/sale-qty-linechart.json')
+def show_sale_qty_chart():
+    """Return sale quantities data as json."""
+
+    user_id = session.get("user_id")
+
+    month_num = int(request.args.get("months"))
+
+    attr_list = ['gap', 'nike']
+
+    data_dict = show_sal_qtychart_json(user_id, month_num, attr_list)
+
+    return jsonify(data_dict)
+
+
+@app.route('/sale-revenue-linechart.json')
+def show_sale_revenue_chart():
+    """Return sale revenue data as json."""
+
+    user_id = session.get("user_id")
+
+    month_num = int(request.args.get("months"))
+
+    attr_list = ['gap', 'nike']
+
+    data_dict = show_sal_revenuechart_json(user_id, month_num, attr_list)
+
+    return jsonify(data_dict)
+
+
+@app.route('/sale-profit-linechart.json')
+def show_sale_profit_chart():
+    """Return sale profit data as json."""
+
+    user_id = session.get("user_id")
+
+    month_num = int(request.args.get("months"))
+
+    attr_list = ['gap', 'nike']
+
+    data_dict = show_sal_profitchart_json(user_id, month_num, attr_list)
+
+    return jsonify(data_dict)
+
+
+
 ###########################################################################
 #useful functon
-
-
-def display_salesum_json(month_num, attr_list, user_id):
-    """Show sale sumarizing data as jason"""
-
-    result = {}
-
-    set_date = datetime.now().date() - relativedelta(months=month_num)
-    sale = db.session.query(db.func.date_part('year', Sale.transc_at).label("year_at"), db.func.date_part('month', Sale.transc_at).label("month_at"), Sale.prd_id, db.func.sum(Sale.transc_price * Sale.quantities).label("revenue"), db.func.sum(Sale.quantities).label("sale_qty")).filter(Sale.transc_at >= set_date).group_by(db.func.date_part('year', Sale.transc_at).label("year_at"), db.func.date_part('month', Sale.transc_at).label("month_at"), Sale.prd_id).subquery()
-
-    purch_cost = db.session.query(Purchase.prd_id, (db.func.sum(Purchase.purchase_price * Purchase.quantities) / db.func.sum(Purchase.quantities)).label("avg_purch_cost")).group_by(Purchase.prd_id).subquery()
-
-    prod = db.session.query(Product.prd_id, Product.cg_id, Category.cg_name).join(Category).join(Product.prddetail).filter(CategoryDetailValue.attr_val.in_(attr_list), Product.user_id == user_id).group_by(Product.prd_id, Product.cg_id, Category.cg_name).subquery()
-
-    sale_sum = db.session.query((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name, db.func.sum(sale.c.sale_qty).label("sale_qty"), db.func.sum(sale.c.revenue).label("revenue"), db.func.sum(sale.c.revenue - purch_cost.c.avg_purch_cost * sale.c.sale_qty).label("profit")).join(purch_cost, sale.c.prd_id == purch_cost.c.prd_id).join(prod, sale.c.prd_id == prod.c.prd_id).group_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name).order_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name)
-
-    column_name = [column["name"] for column in sale_sum.column_descriptions]
-
-    result["result"] = [dict(zip(column_name, data)) for data in sale_sum]
-
-    return sale_sum.all()
-
-    # return jsonify(result)
-
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

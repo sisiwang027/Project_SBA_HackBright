@@ -111,6 +111,74 @@ db.session.query(Purchase.prd_id,
 
 
 
+var fen_yuan = function(val){
+    //toFixed来确定保留两位小数  因为除以100 所以都会整除
+    var str = (val/100).toFixed(2) + '';
+    var intSum = str.substring(0,str.indexOf(".")).replace( /\B(?=(?:\d{3})+$)/g, ',' );
+    //取到整数部分
+    var dot = str.substring(str.length,str.indexOf("."))
+    //取到小数部分
+    var ret = intSum + dot;
+    return ret;
+}
+
+
+sale_sum_timelabel = db.session.query((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name,\
+    db.func.sum(sale.c.sale_qty).label("sale_qty"),\
+    db.func.sum(sale.c.revenue).label("revenue"),\
+    db.func.sum(sale.c.revenue - purch_cost.c.avg_purch_cost * sale.c.sale_qty).label("profit"))\
+.join(purch_cost, sale.c.prd_id == purch_cost.c.prd_id)\
+.join(prod, sale.c.prd_id == prod.c.prd_id)\
+.group_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"))\
+.order_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name)
+
+
+
+sale_sum_label = db.session.query((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name)\
+.join(purch_cost, sale.c.prd_id == purch_cost.c.prd_id)\
+.join(prod, sale.c.prd_id == prod.c.prd_id)\
+.group_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name).all()
+
+
+
+time_list, cg_list = zip(*sale_sum_label)
+
+time_list = list(set(time_list))
+
+time_list = [str(int(item)) for item in time_list]
+
+cg_list = list(set(cg_list))
+
+cg_list = [str(item) for item in cg_list]
+
+
+
+sale_sum_timelabel = db.session.query((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"))\
+.join(purch_cost, sale.c.prd_id == purch_cost.c.prd_id)\
+.join(prod, sale.c.prd_id == prod.c.prd_id)\
+.group_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at")).all()
+
+
+
+
+
+https://stackoverflow.com/questions/26643503/handlebars-loading-external-template-files
+$.get('templates/products.hbs', function (data) {
+    var template=Handlebars.compile(data);
+    $(target).html(template(jsonData));
+}, 'html')
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

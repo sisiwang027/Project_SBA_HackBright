@@ -5,44 +5,145 @@
 
 {% if session.get("user_id") %}
 
-
+<form id = "month-filter">
 <div class="container">
-  <h2>Products</h2><br>
-  <p><a href="/add_product">Add Products</a></p>
-             
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Category</th>
-        <th>Total Purchase Qty</th>
-        <th>Total Purchase Qty On Hand</th>
-        <th>Total Purchase Cost On Hand</th>
-        <th>Total Sale Qty</th>
-        <th>Total Sale Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      
-      
-        <tr>
-          <td>{{ product_sum[0].cg_name }}</td>
-          <td>{{ product_sum[0].purch_qty_sum }}</td>
-          <td>{{ product_sum[0].purch_onhand_qty }}</td>
-          <td>{{ product_sum[0].purch_onhand_cost }}</td>
-          <td>{{ product_sum[0].sale_qty }}</td>
-          <td>{{ product_sum[0].sale_price_sum }}</td>
+  <h2>Products Sum Information</h2><br>
+  
+  show the past <input type="month" name="months" id="months" required>months data
+  <input type="submit" value="Submit" name="submit">
+  <button id="showTop" title="showTop">Show Top Products</button>
+  
+  <p><a href="/product" >Product Detail Lists</a></p>
+
+    <div class="product-sum-chart">
+      <canvas id="donutChart"></canvas>
+      <div id="donutLegend" class="chart-legend"></div>
+    </div>
+
+    <div id="handlebars-table">
+    </div>
+
+      {% raw %}
+        <script id="product_sum_report" type="text/x-handlebars-template">
           
-        </tr>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Product Num</th>
+                <th>Total Purchase Qty</th>
+                <th>Total Purchase Qty On Hand</th>
+                <th>Total Purchase Cost On Hand</th>
+                <th>Total Sale Qty</th>
+                <th>Total Sale Price</th>
+              </tr>
+            </thead>
+            <tbody id>
+              {{#each result}}
+                <!-- Here the context is each row. So we can access its properties directly: -->    
+                <tr>
+                  <td>{{ cg_name }}</td>
+                  <td>{{ prod_num }}</td>
+                  <td>{{ purch_qty_sum }}</td>
+                  <td>{{ purch_onhand_qty }}</td>
+                  <td>{{ formatFloat purch_onhand_cost }}</td>
+                  <td>{{ sale_qty }}</td>
+                  <td>{{ formatFloat sale_price_sum }}</td>
+                </tr> 
+              {{/each}}
+            </tbody>
+          </table>  
+          </div>
+        </script>
+      {% endraw %}
 
-
-    </tbody>
-  </table>
 </div>
 
+</form>
 
 
 {% endif %}
 
+<script>
+  Handlebars.registerHelper("formatFloat", function(data){
+      // add function formatFloat to format data.   
+      return data.toFixed(2);
+    });
+
+  // Make Line Chart of Melon Sales over time
+
+  var ctx_donut = $("#donutChart").get(0).getContext("2d");
+
+  var options = {
+      responsive: true
+    };
+
+  function showPiChart(data) {
+
+     var myDonutChart = new Chart(ctx_donut, {
+                                              type: 'doughnut',
+                                              data: data,
+                                              options: options
+                                            });
+      $('#donutLegend').html(myDonutChart.generateLegend());
+
+  }
+
+  function showBarChart(data) {
+
+   
+     var myBarChart = new Chart(ctx_donut, {
+                                              type: 'bar',
+                                              data: data,
+                                              options: options
+                                            });
+      $('#donutLegend').html(myBarChart.generateLegend());
+
+  }
+
+  function showData (report_json) {
+    // show the result of submiting form.
+    
+    var tableScrip = $("#product_sum_report").html();
+    var theTemplate = Handlebars.compile(tableScrip);
+
+    var context = report_json;
+
+    var theCompiledHtml = theTemplate(context);
+
+    $("#handlebars-table").html(theCompiledHtml);
+
+  }
+
+
+  function getInfo(evt) {
+     // get infomation of form 
+    // prevent change to some-script, and show the text by alerting.
+    evt.preventDefault();
+
+    var formInput = {"months": $("#months").val()};
+
+    $.get("/product_sum.json", formInput, showData);
+    $.get("/prod_pichart.json", formInput, showPiChart);
+  }
+
+
+  function getTopInfo(evt) {
+     // get infomation of form 
+    // prevent change to some-script, and show the text by alerting.
+    evt.preventDefault();
+
+    var formInput = {"months": $("#months").val()};
+
+    $.get("/top_prod_barchart.json", formInput, showBarChart);
+  }
+
+
+  $("#month-filter").on("submit", getInfo);
+  $("#showTop").on("click", getTopInfo);
+  
+
+</script>
 
 
 

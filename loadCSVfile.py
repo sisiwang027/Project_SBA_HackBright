@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm.exc import NoResultFound
 from model import (Gender, User, Customer, Category, CategoryAttribute, CategoryDetail,
-                   Product, CategoryDetailValue, ProductDetail)
+                   Product, CategoryDetailValue, ProductDetail,  Sale, Purchase)
 from model import connect_to_db, db, app
 from flask import (Flask, render_template, redirect, request, flash,
                    session, jsonify, url_for, send_from_directory)
@@ -114,8 +114,29 @@ def add_category(new_category):
             db.session.commit()
             return "The category has been successfully added."
 
-
-
 if __name__ == "__main__":
 
     print "Don't run this file directly."
+
+
+# def display_salesum_json(month_num, attr_list, user_id):
+#     """Show sale sumarizing data as jason"""
+
+#     result = {}
+
+#     set_date = datetime.now().date() - relativedelta(months=month_num)
+#     sale = db.session.query(db.func.date_part('year', Sale.transc_at).label("year_at"), db.func.date_part('month', Sale.transc_at).label("month_at"), Sale.prd_id, db.func.sum(Sale.transc_price * Sale.quantities).label("revenue"), db.func.sum(Sale.quantities).label("sale_qty")).filter(Sale.transc_at >= set_date).group_by(db.func.date_part('year', Sale.transc_at).label("year_at"), db.func.date_part('month', Sale.transc_at).label("month_at"), Sale.prd_id).subquery()
+
+#     purch_cost = db.session.query(Purchase.prd_id, (db.func.sum(Purchase.purchase_price * Purchase.quantities) / db.func.sum(Purchase.quantities)).label("avg_purch_cost")).group_by(Purchase.prd_id).subquery()
+
+#     prod = db.session.query(Product.prd_id, Product.cg_id, Category.cg_name).join(Category).join(Product.prddetail).filter(CategoryDetailValue.attr_val.in_(attr_list), Product.user_id == user_id).group_by(Product.prd_id, Product.cg_id, Category.cg_name).subquery()
+
+#     sale_sum = db.session.query((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name, db.func.sum(sale.c.sale_qty).label("sale_qty"), db.func.sum(sale.c.revenue).label("revenue"), db.func.sum(sale.c.revenue - purch_cost.c.avg_purch_cost * sale.c.sale_qty).label("profit")).join(purch_cost, sale.c.prd_id == purch_cost.c.prd_id).join(prod, sale.c.prd_id == prod.c.prd_id).group_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name).order_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name)
+
+#     column_name = [column["name"] for column in sale_sum.column_descriptions]
+
+#     result["result"] = [dict(zip(column_name, data)) for data in sale_sum]
+
+#     return sale_sum.all()
+
+#     # return jsonify(result)

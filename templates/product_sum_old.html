@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+{% if session.get("user_id") %}
+
+
+<div class="container">
+  <h2>Products</h2><br>
+  <p><a href="/add_product">Add Products</a></p>
+             
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Total Purchase Qty</th>
+        <th>Total Purchase Qty On Hand</th>
+        <th>Total Purchase Cost On Hand</th>
+        <th>Total Sale Qty</th>
+        <th>Total Sale Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      
+        <tr>
+          <td>{{ product_sum[0].cg_name }}</td>
+          <td>{{ product_sum[0].purch_qty_sum }}</td>
+          <td>{{ product_sum[0].purch_onhand_qty }}</td>
+          <td>{{ product_sum[0].purch_onhand_cost }}</td>
+          <td>{{ product_sum[0].sale_qty }}</td>
+          <td>{{ product_sum[0].sale_price_sum }}</td>
+          
+        </tr>
+
+
+    </tbody>
+  </table>
+</div>
+
+
+
+{% endif %}
+
+
+
+
+{% endblock %}

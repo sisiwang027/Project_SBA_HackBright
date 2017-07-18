@@ -11,22 +11,19 @@
   
   show the past <input type="number" name="months" id="months" required>months data
   <input type="submit" value="Submit" name="submit">
-  <button id="showRevenue" title="showRevenue">RevenueChart</button>
-  <button id="showProfit" title="showProfit">ProfitChart</button>
   
   <p><a href="/product" >Sale Details of Each Product</a></p>
 
-    <div class="sale-sum-chart">
-      <canvas id="lineChart"></canvas>
-      <div id="lineLegend" class="chart-legend"></div>
-    </div>
+  <div class="sale-sum-chart">
+    <canvas id="lineChart"></canvas>
+    <div id="lineLegend" class="chart-legend"></div>
+  </div>
 
-    <div id="handlebars-table">
-    </div>
-
+  <table class="table">
       {% raw %}
         <script id="sale_sum_report" type="text/x-handlebars-template">
           
+
           <table class="table">
             <thead>
               <tr>
@@ -51,10 +48,10 @@
               {{/each}}
             </tbody>
           </table>  
-          </div>
         </script>
       {% endraw %}
 
+  </table>
 </div>
 
 </form>
@@ -76,27 +73,23 @@
       responsive: true
     };
 
-  function showLineChart(data) {
-
-     var myLineChart = Chart.Line(ctx_line, {
-                                    data: data,
-                                    options: options
-                                });
-    $("#lineLegend").html(myLineChart.generateLegend());
-
-  }
-
   function showData (report_json) {
     // show the result of submiting form.
     
     var tableScrip = $("#sale_sum_report").html();
     var theTemplate = Handlebars.compile(tableScrip);
 
-    var context = report_json;
+    var context = report_json
 
-    var theCompiledHtml = theTemplate(context);
+    var theCompiledHtml = theTemplate(context)
 
-    $("#handlebars-table").html(theCompiledHtml);
+    // $(".container").append(theCompiledHtml);
+
+    var myLineChart = Chart.Line(ctx_line, {
+                                    data: report_json,
+                                    options: options
+                                });
+    $("#lineLegend").html(myLineChart.generateLegend());
 
   }
 
@@ -108,38 +101,13 @@
 
     var formInput = {"months": $("#months").val()};
 
-    $.get("/sale_sum.json", formInput, showData);
-    $.get("/sale-qty-linechart.json", formInput, showLineChart);
-  }
-
-  function getRevenueInfo(evt) {
-     // get infomation of form 
-    // prevent change to some-script, and show the text by alerting.
-    evt.preventDefault();
-
-    var formInput = {"months": $("#months").val()};
-
-    $.get("/sale-revenue-linechart.json", formInput, showLineChart);
-  }
-
-  function getProfitInfo(evt) {
-     // get infomation of form 
-    // prevent change to some-script, and show the text by alerting.
-    evt.preventDefault();
-
-    var formInput = {"months": $("#months").val()};
-
-    $.get("/sale-profit-linechart.json", formInput, showLineChart);
+    $.get("/melon-times.json", formInput, showData);
   }
 
 
   $("#month-filter").on("submit", getInfo);
-  $("#showRevenue").on("click", getRevenueInfo);
-  $("#showProfit").on("click", getProfitInfo);
-  
 
 </script>
-
 
 
 {% endblock %}
