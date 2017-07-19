@@ -7,7 +7,8 @@ from flask import (Flask, render_template, redirect, request, flash,
 from model import (Gender, User, Customer, Category, CategoryAttribute, CategoryDetail,
                    Product, CategoryDetailValue, ProductDetail, Sale, Purchase)
 from model import connect_to_db, db, app
-from loadCSVfile import load_csv_product, add_category, add_product_to_table, add_attr_to_table
+from loadCSVfile import load_csv_product
+from add_datato_db import add_category, add_product_to_table, add_attr_to_table
 from report_result import show_sal_qtychart_json, sale_sum_report, prod_sum_report, show_sal_revenuechart_json, show_sal_profitchart_json, show_prodchart_json, prod_sum_report, show_top10_prod_json
 from report import show_table, show_test_table
 from sqlalchemy.sql.functions import coalesce
@@ -144,12 +145,6 @@ def add_product_form():
     categories = Category.query.all()
 
     return render_template("add_product.html", categories=categories)
-    # render_template("add_product.html", categories)
-    # for cg in categories:
-    #     for attr in cg.cgattribute:
-    #         category_attr.append({"cg_name": cg.cg_name, "attr_name": attr.attr_name})
-
-    # cg[0].cgattribute[0].attributeval[0].attr_val
 
 
 @app.route("/add_product", methods=["POST"])

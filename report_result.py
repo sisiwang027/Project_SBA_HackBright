@@ -9,8 +9,10 @@ from datetime import datetime
 from sqlalchemy.sql.functions import coalesce
 from dateutil.relativedelta import relativedelta
 
-def sql_to_linechartejson(sqlalchemy_list):
+
+def sql_to_linechartejson(sqlalchemy_list, chart_title):
     """Change the result of sqlalchemy to linecharte json"""
+
     data_dict = {}
     data_dict["labels"] = []
     data_dict["datasets"] = []
@@ -54,7 +56,10 @@ def sql_to_linechartejson(sqlalchemy_list):
 
         data_dict["datasets"].append(data_set)
 
-    return data_dict
+    options = {"title": {"display": True, "text": chart_title}, "responsive": True}
+    data_chart = {"type": "line", "options": options, "data": data_dict}
+
+    return data_chart
 
 
 def show_sal_qtychart_json(user_id, month_num, attr_list):
@@ -79,7 +84,7 @@ def show_sal_qtychart_json(user_id, month_num, attr_list):
                              prod.c.cg_name).order_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name)\
                    .all()
 
-    return sql_to_linechartejson(sale_qty_sum)
+    return sql_to_linechartejson(sale_qty_sum, "Quantities Chart")
 
 
 def show_sal_revenuechart_json(user_id, month_num, attr_list):
@@ -113,7 +118,7 @@ def show_sal_revenuechart_json(user_id, month_num, attr_list):
                              prod.c.cg_name).order_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name)\
                    .all()
 
-    return sql_to_linechartejson(sale_revenue_sum)
+    return sql_to_linechartejson(sale_revenue_sum, "Revenue Chart")
 
 
 def show_sal_profitchart_json(user_id, month_num, attr_list):
@@ -147,7 +152,7 @@ def show_sal_profitchart_json(user_id, month_num, attr_list):
                              prod.c.cg_name).order_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name)\
                    .all()
 
-    return sql_to_linechartejson(sale_profit_sum)
+    return sql_to_linechartejson(sale_profit_sum, "Profit Chart")
 
 
 def sale_sum_report(user_id, attr_list, month_num):
@@ -183,31 +188,31 @@ def prod_sum_report(user_id, attr_list, month_num):
 
     set_date = datetime.strptime(firstday_month, "%Y%m%d").date() + relativedelta(months=1)
 
-    purch = db.session.query(Purchase.prd_id,\
-                             db.func.round(db.func.sum(coalesce(Purchase.quantities, 0))).label("purch_qty"),\
+    purch = db.session.query(Purchase.prd_id,
+                             db.func.round(db.func.sum(coalesce(Purchase.quantities, 0))).label("purch_qty"),
                              db.func.sum(coalesce(db.func.round(Purchase.quantities) * Purchase.purchase_price, 0)).label("purch_price_sum"))\
                       .filter(Purchase.purchase_at < set_date)\
                       .group_by(Purchase.prd_id).subquery()
 
-    sale = db.session.query(Sale.prd_id,\
-                            db.func.round(db.func.sum(coalesce(Sale.quantities, 0))).label("sale_qty"),\
+    sale = db.session.query(Sale.prd_id,
+                            db.func.round(db.func.sum(coalesce(Sale.quantities, 0))).label("sale_qty"),
                             db.func.sum(coalesce(db.func.round(Sale.quantities) * Sale.transc_price, 0)).label("sale_price_sum"))\
                      .filter(Sale.transc_at < set_date)\
                      .group_by(Sale.prd_id).subquery()
 
-    prod = db.session.query(Product.prd_id,\
+    prod = db.session.query(Product.prd_id,
                             Product.cg_id, Category.cg_name)\
                      .join(Category).join(Product.prddetail)\
                      .filter(CategoryDetailValue.attr_val.in_(attr_list), Product.user_id == user_id)\
                      .group_by(Product.prd_id, Product.cg_id, Category.cg_name).subquery()
 
-    product_sum = db.session.query(prod.c.cg_name,\
-                                   db.func.count(prod.c.prd_id).label("prod_num"),\
-                                   db.func.sum(purch.c.purch_qty).label("purch_qty_sum"),\
-                                   db.func.sum(purch.c.purch_price_sum).label("purch_price_sum"),\
-                                   db.func.sum(purch.c.purch_qty - sale.c.sale_qty).label("purch_onhand_qty"),\
-                                   db.func.sum(purch.c.purch_price_sum / purch.c.purch_qty * (purch.c.purch_qty - sale.c.sale_qty)).label("purch_onhand_cost"),\
-                                   db.func.sum(sale.c.sale_qty).label("sale_qty"),\
+    product_sum = db.session.query(prod.c.cg_name,
+                                   db.func.count(prod.c.prd_id).label("prod_num"),
+                                   db.func.sum(purch.c.purch_qty).label("purch_qty_sum"),
+                                   db.func.sum(purch.c.purch_price_sum).label("purch_price_sum"),
+                                   db.func.sum(purch.c.purch_qty - sale.c.sale_qty).label("purch_onhand_qty"),
+                                   db.func.sum(purch.c.purch_price_sum / purch.c.purch_qty * (purch.c.purch_qty - sale.c.sale_qty)).label("purch_onhand_cost"),
+                                   db.func.sum(sale.c.sale_qty).label("sale_qty"),
                                    db.func.sum(sale.c.sale_price_sum).label("sale_price_sum"))\
                             .outerjoin(purch, prod.c.prd_id == purch.c.prd_id)\
                             .outerjoin(sale, prod.c.prd_id == sale.c.prd_id)\
@@ -220,22 +225,21 @@ def prod_sum_report(user_id, attr_list, month_num):
     return result
 
 
-
-def sql_to_pichartejson(sqlalchemy_list):
+def sql_to_pichartejson(sqlalchemy_list, chart_title):
     """Change the result of sqlalchemy to linecharte json"""
 
     qty_date = list(sqlalchemy_list[0])
 
-    data_dict = {
-                "labels": ["Sale Qty","On-hand Qty"],
-                "datasets": [
-                    {"data": qty_date,
-                        "backgroundColor": ["#FF6384","#36A2EB"],
-                        "hoverBackgroundColor": ["#FF6384","#36A2EB"]
-                    }]
-            }
+    data_dict = {"labels": ["Sale Qty", "On-hand Qty"],
+                 "datasets": [{"data": qty_date,
+                               "backgroundColor": ["#FF6384", "#36A2EB"],
+                               "hoverBackgroundColor": ["#FF6384", "#36A2EB"]}]}
 
-    return data_dict
+    options = {"title": {"display": True, "text": chart_title}, "responsive": True}
+    data_chart = {"type": "doughnut", "options": options, "data": data_dict}
+
+    return data_chart
+
 
 def show_prodchart_json(user_id, month_num, attr_list):
     """show sale profit chart data as a json"""
@@ -244,19 +248,19 @@ def show_prodchart_json(user_id, month_num, attr_list):
 
     set_date = datetime.strptime(firstday_month, "%Y%m%d").date() + relativedelta(months=1)
 
-    purch = db.session.query(Purchase.prd_id,\
-                             db.func.round(db.func.sum(coalesce(Purchase.quantities, 0))).label("purch_qty"),\
+    purch = db.session.query(Purchase.prd_id,
+                             db.func.round(db.func.sum(coalesce(Purchase.quantities, 0))).label("purch_qty"),
                              db.func.sum(coalesce(db.func.round(Purchase.quantities) * Purchase.purchase_price, 0)).label("purch_price_sum"))\
                       .filter(Purchase.purchase_at < set_date)\
                       .group_by(Purchase.prd_id).subquery()
 
-    sale = db.session.query(Sale.prd_id,\
-                            db.func.round(db.func.sum(coalesce(Sale.quantities, 0))).label("sale_qty"),\
+    sale = db.session.query(Sale.prd_id,
+                            db.func.round(db.func.sum(coalesce(Sale.quantities, 0))).label("sale_qty"),
                             db.func.sum(coalesce(db.func.round(Sale.quantities) * Sale.transc_price, 0)).label("sale_price_sum"))\
                      .filter(Sale.transc_at < set_date)\
                      .group_by(Sale.prd_id).subquery()
 
-    prod = db.session.query(Product.prd_id,\
+    prod = db.session.query(Product.prd_id,
                             Product.cg_id, Category.cg_name)\
                      .join(Category).join(Product.prddetail)\
                      .filter(CategoryDetailValue.attr_val.in_(attr_list), Product.user_id == user_id)\
@@ -266,11 +270,10 @@ def show_prodchart_json(user_id, month_num, attr_list):
                                    db.func.sum(purch.c.purch_qty - sale.c.sale_qty).label("purch_onhand_qty"))\
                             .join(purch, sale.c.prd_id == purch.c.prd_id).all()
 
+    return sql_to_pichartejson(product_sum, "Sale Information")
 
-    return sql_to_pichartejson(product_sum)
 
-
-def sql_to_barchartejson(sqlalchemy_list):
+def sql_to_barchartejson(sqlalchemy_list, chart_title):
     """Change the result of sqlalchemy to linecharte json"""
 
     prod_list = []
@@ -280,21 +283,16 @@ def sql_to_barchartejson(sqlalchemy_list):
         prod_list.append(prod_name)
         sale_list.append(sale_qty)
 
+    data_dict = {"labels": prod_list,
+                 "datasets": [{"data": sale_list,
+                               "backgroundColor": ["#36A2EB", "#FF6384", "#FF6384", "#FF6384", "#FF6384",
+                                                   "#FF6384", "#FF6384", "#FF6384", "#FF6384", "#FF6384"]}]}
 
-    data_dict = {
-                "labels": prod_list,
-                "datasets": [
-                    {"data": sale_list,
-                        "backgroundColor": ["#36A2EB", "#FF6384", "#FF6384", "#FF6384", "#FF6384", "#FF6384", "#FF6384", "#FF6384", "#FF6384", "#FF6384"]
-                    
-                    }],
+    options = {"title": {"display": True, "text": chart_title}, "responsive": True}
+    data_chart = {"type": "bar", "options": options, "data": data_dict}
 
-                "title": {"display": True,
-                "text": 'Predicted world population (millions) in 2050'}
+    return data_chart
 
-            }
-
-    return data_dict
 
 def show_top10_prod_json(user_id, month_num, attr_list):
     """Show Top 10 products chart."""
@@ -302,14 +300,14 @@ def show_top10_prod_json(user_id, month_num, attr_list):
     firstday_month = month_num.replace('-', '') + "01"
 
     set_date = datetime.strptime(firstday_month, "%Y%m%d").date() + relativedelta(months=1)
-    top10_prod = db.session.query(Product.prd_name,\
+    top10_prod = db.session.query(Product.prd_name,
                                   db.func.sum(db.func.round(Sale.quantities)).label("sale_qty"))\
                            .filter(Sale.transc_at < set_date)\
                            .join(Sale).group_by(Product.prd_name)\
-                           .order_by(db.func.sum(db.func.round(Sale.quantities)).label("sale_qty")\
-                            .desc()).limit(10).all()
+                           .order_by(db.func.sum(db.func.round(Sale.quantities)).label("sale_qty").desc())\
+                           .limit(10).all()
 
-    return sql_to_barchartejson(top10_prod)
+    return sql_to_barchartejson(top10_prod, "Top Ten Products")
 
 
 

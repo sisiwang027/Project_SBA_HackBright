@@ -1,0 +1,28 @@
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Product Num</th>
+      <th>Total Purchase Qty</th>
+      <th>Total Purchase Qty On Hand</th>
+      <th>Total Purchase Cost On Hand</th>
+      <th>Total Sale Qty</th>
+      <th>Total Sale Price</th>
+    </tr>
+  </thead>
+  <tbody id>
+    {{#each result}}
+      <!-- Here the context is each row. So we can access its properties directly: -->    
+      <tr>
+        <td>{{ cg_name }}</td>
+        <td>{{ prod_num }}</td>
+        <td>{{ purch_qty_sum }}</td>
+        <td>{{ purch_onhand_qty }}</td>
+        <td>{{ formatFloat purch_onhand_cost }}</td>
+        <td>{{ sale_qty }}</td>
+        <td>{{ formatFloat sale_price_sum }}</td>
+      </tr> 
+    {{/each}}
+  </tbody>
+</table>

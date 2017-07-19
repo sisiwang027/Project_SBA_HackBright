@@ -1,0 +1,25 @@
+<table class="table" >
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Category</th>
+      <th>Total Sale Qty</th>
+      <th>Revenue</th>
+      <th>Profit</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {{#each result}}
+      <!-- Here the context is each row. So we can access its properties directly: -->     
+      <tr>
+        <td>{{ sale_at }}</td>
+        <td>{{ cg_name }}</td>
+        <td>{{ sale_qty }}</td>
+        <td>{{ formatFloat revenue }}</td>
+        <td>{{ formatFloat profit }}</td> 
+      </tr> 
+    {{/each}}
+  </tbody>
+
+</table>  

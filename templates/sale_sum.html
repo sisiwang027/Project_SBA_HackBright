@@ -6,140 +6,30 @@
 {% if session.get("user_id") %}
 
 <form id = "month-filter">
-<div class="container">
-  <h2>Sale Sum Information</h2><br>
-  
-  show the past <input type="number" name="months" id="months" required>months data
-  <input type="submit" value="Submit" name="submit">
-  <button id="showRevenue" title="showRevenue">RevenueChart</button>
-  <button id="showProfit" title="showProfit">ProfitChart</button>
-  
-  <p><a href="/product" >Sale Details of Each Product</a></p>
+  <div class="container">
+    <h2>Sale Sum Information</h2><br>
+    
+    show the past <input type="number" name="months" id="months" required>months data
+    <input type="submit" value="Submit" name="submit">
+    <button id="showRevenue" title="showRevenue">RevenueChart</button>
+    <button id="showProfit" title="showProfit">ProfitChart</button>
+    
+    <p><a href="/product" >Sale Details of Each Product</a></p>
 
     <div class="sale-sum-chart">
-      <canvas id="lineChart"></canvas>
-      <div id="lineLegend" class="chart-legend"></div>
+      <div id="lineChartContainer">
+      </div>
+      <!-- <div id="lineLegend" class="chart-legend"></div> -->
     </div>
 
     <div id="handlebars-table">
     </div>
-
-      {% raw %}
-        <script id="sale_sum_report" type="text/x-handlebars-template">
-          
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Category</th>
-                <th>Total Sale Qty</th>
-                <th>Revenue</th>
-                <th>Profit</th>
-              </tr>
-            </thead>
-            <tbody id>
-              {{#each result}}
-                <!-- Here the context is each row. So we can access its properties directly: -->     
-                <tr>
-                  <td>{{ sale_at }}</td>
-                  <td>{{ cg_name }}</td>
-                  <td>{{ sale_qty }}</td>
-                  <td>{{ formatFloat revenue }}</td>
-                  <td>{{ formatFloat profit }}</td>
-                  
-                </tr> 
-              {{/each}}
-            </tbody>
-          </table>  
-          </div>
-        </script>
-      {% endraw %}
-
-</div>
-
+  </div>
 </form>
 
 
 {% endif %}
 
-<script>
-  Handlebars.registerHelper("formatFloat", function(data){
-      // add function formatFloat to format data.
-      
-      return data.toFixed(2);
-    });
-
-  // Make Line Chart of Melon Sales over time
-  var ctx_line = $("#lineChart").get(0).getContext("2d");
-
-  var options = {
-      responsive: true
-    };
-
-  function showLineChart(data) {
-
-     var myLineChart = Chart.Line(ctx_line, {
-                                    data: data,
-                                    options: options
-                                });
-    $("#lineLegend").html(myLineChart.generateLegend());
-
-  }
-
-  function showData (report_json) {
-    // show the result of submiting form.
-    
-    var tableScrip = $("#sale_sum_report").html();
-    var theTemplate = Handlebars.compile(tableScrip);
-
-    var context = report_json;
-
-    var theCompiledHtml = theTemplate(context);
-
-    $("#handlebars-table").html(theCompiledHtml);
-
-  }
-
-
-  function getInfo(evt) {
-     // get infomation of form 
-    // prevent change to some-script, and show the text by alerting.
-    evt.preventDefault();
-
-    var formInput = {"months": $("#months").val()};
-
-    $.get("/sale_sum.json", formInput, showData);
-    $.get("/sale-qty-linechart.json", formInput, showLineChart);
-  }
-
-  function getRevenueInfo(evt) {
-     // get infomation of form 
-    // prevent change to some-script, and show the text by alerting.
-    evt.preventDefault();
-
-    var formInput = {"months": $("#months").val()};
-
-    $.get("/sale-revenue-linechart.json", formInput, showLineChart);
-  }
-
-  function getProfitInfo(evt) {
-     // get infomation of form 
-    // prevent change to some-script, and show the text by alerting.
-    evt.preventDefault();
-
-    var formInput = {"months": $("#months").val()};
-
-    $.get("/sale-profit-linechart.json", formInput, showLineChart);
-  }
-
-
-  $("#month-filter").on("submit", getInfo);
-  $("#showRevenue").on("click", getRevenueInfo);
-  $("#showProfit").on("click", getProfitInfo);
-  
-
-</script>
-
-
+<script src="/static/sale_sum_report.js"></script>
 
 {% endblock %}

@@ -163,7 +163,7 @@ sale_sum_timelabel = db.session.query((sale.c.year_at * 100 + sale.c.month_at).l
 
 
 https://stackoverflow.com/questions/26643503/handlebars-loading-external-template-files
-$.get('templates/products.hbs', function (data) {
+$.get('static/sale_sum_report.hbs', function (data) {
     var template=Handlebars.compile(data);
     $(target).html(template(jsonData));
 }, 'html')

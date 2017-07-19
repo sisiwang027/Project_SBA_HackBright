@@ -33,8 +33,8 @@
           <td>{{ product.sale_price }}</td>
           <td>{{ product.description }}</td>
           <td><a href="/product_detail/{{ product.prd_id }}">see details</a></td>
-          <td><a href="/purchase/{{ product.prd_id }}">Qty:{{ product.purch_qty }} Total:{{ product.purch_price_sum }}</a></td>
-          <td><a href="/sale/{{ product.prd_id }}">Qty:{{ product.sale_qty }} Total:{{ product.sale_price_sum}}</a></td>
+          <td><a href="/purchase/{{ product.prd_id }}">Qty:{{ product.purch_qty }} Total($):{{ '%0.2f' % product.purch_price_sum|float }}</a></td>
+          <td><a href="/sale/{{ product.prd_id }}">Qty:{{ product.sale_qty }} Total($):{{ '%0.2f' % product.sale_price_sum|float}}</a></td>
         </tr>
 
       {% endfor %}
