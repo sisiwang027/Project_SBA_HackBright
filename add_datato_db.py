@@ -1,6 +1,7 @@
 """Load data to database."""
 
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError
 from model import (Gender, User, Customer, Category, CategoryAttribute, CategoryDetail,
                    Product, CategoryDetailValue, ProductDetail,  Sale, Purchase)
 from model import connect_to_db, db, app
@@ -33,7 +34,12 @@ def add_product_to_table(row_list, attr_list):
                       cg_id=cg.cg_id,
                       sale_price=row_list[2],
                       description=row_list[3])
-    db.session.add(product)
+
+    try:
+        db.session.add(product)
+        db.session.commit()
+    except IntegrityError:
+        return "Product has existed, please input a new product! (Product is unique!)"
 
     attr_val = row_list[4:]
     val_list = []

@@ -13,23 +13,26 @@
   </select><br>
 
   Product Name (It's unique for each product.): 
-  <input type="text" name="productname" id="productname" required><br>
+  <input type="text" name="productname" id="productname"><br>
 
   Sale Price:
-  <input type="number" name="saleprice" id="saleprice" step="0.01" required><br>
+  <input type="number" name="saleprice" id="saleprice" step="0.01"><br>
 
   Product Description:
-  <input type="text" name="description" id="description" required><br>
+  <input type="text" name="description" id="description"><br>
 
-  <div calss="input_attrs" id="input_attrs_field">
+  <div class="input_attrs" id="input_attrs_field">
     
-    <div calss="input_attrs" id="attr1">
-      Attribute Name 1:
-      <input type="text" name="attrname1" id="attrname1" required>
-      Attribute Value 1:
-      <input type="text" name="attrvalue1" id="attrvalue1" required>
-      <a href="#" class="remove_field">Remove</a>
-    </div><br>
+    <div class="input_attrs" id="attr1">
+      Attribute Name:
+      <input type="text" name="attrname1" id="attrname1">
+      Attribute Value:
+      <input type="text" name="attrvalue1" id="attrvalue1">
+    </div>
+    
+    <div class="input_attrs" id="attr-add">
+
+    </div>
 
   </div>
   <button id="addOneAttr" name="Add One More Attribute">Add One More Attribute</button>

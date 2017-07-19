@@ -161,8 +161,9 @@ def add_product_process():
     attr_num = request.form.get("attr_num")
 
     for i in range(1, int(attr_num) + 1):
-        attr_name.append(request.form.get("attrname" + str(i)))
-        attr_val.append(request.form.get("attrvalue" + str(i)))
+        if request.form.get("attrname" + str(i)):
+            attr_name.append(request.form.get("attrname" + str(i)))
+            attr_val.append(request.form.get("attrvalue" + str(i)))
 
     one_product = [productname, category, float(saleprice), description] + attr_val
 

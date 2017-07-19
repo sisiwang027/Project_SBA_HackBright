@@ -8,25 +8,7 @@
     <input type="submit" value="Add Category" name="submit">
 </form>
 
-<script>
-
-  function showAlert (results) {
-
-    alert(results);
-  }
-
-  function getInfo(evt) {
-    // prevent change to some-script, and show the text by alerting.
-    evt.preventDefault();
-
-    var formInput = {"cg": $("#categoryname").val()};
-
-    $.post("/add_category", formInput, showAlert);
-  }
-
-  $("#addcategory").on("submit", getInfo);
-
-</script>
+<script src="/static/add_category.js"></script>
 
 {% endblock %}
 <!doctype html>

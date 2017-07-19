@@ -6,38 +6,54 @@ var numAttr = 1;
 
     numAttr++;
 
-    var attrName = "Attribute Name " + numAttr + ": <input type='text' name='attrname" + numAttr + "' id='attrname" + numAttr +"' required>";
+    var attrName = "Attribute Name : <input type='text' name='attrname" + numAttr + "' id='attrname" + numAttr +"' >";
 
-    var attrVal = "Attribute Value " + numAttr + ": <input type='text' name='attrvalue" + numAttr + "' id='attrvalue" + numAttr +"' required>";
+    var attrVal = "Attribute Value : <input type='text' name='attrvalue" + numAttr + "' id='attrvalue" + numAttr +"' >";
 
-    // var attrRemove = "<a href='#' class='remove_field'>Remove</a>";
+    var attrRemove = "<a href='#'" + " id='removeAttr" + numAttr + "' removeattrid=" + numAttr + " class='remove-btn'>Remove</a>";
 
     // <button id='removeAttr1' removeAttr-id='1' class='remove-btn'>Remove</button>
 
-    var attrRemove = "<button id='removeAttr" + numAttr + " removeAttr-id=" + numAttr + " class='remove-btn'>Remove</button>";
+    // var attrRemove = "<button id='removeAttr" + numAttr + " removeattrid=" + numAttr + " class='remove-btn'>Remove</button>";
     
-    $('#input_attrs_field').append("<div class='input_attrs' id='attr" + numAttr + "'>" + attrName + attrVal + attrRemove +"</div>");
+    $('#attr-add').append("<div class='input_attrs' id='attr" + numAttr + "'>" + attrName + attrVal + attrRemove +"</div>");
 
     console.log(numAttr);
             
   }
 
-  function removeOneAttr(env) {
-    // remove one attribute name and value input box
+  // function removeOneAttr(env) {
+//     // remove one attribute name and value input box
 
-    numAttr--;
+//     numAttr--;
 
-    $('#input_attrs_field').parent('div').remove();
+//     $('#input_attrs_field').parent('div').remove();
 
-    console.log(numAttr);
+//     console.log(numAttr);
 
-  }
+//   }
+
+  function removeOneAttr(evt) {
+
+            var attrId = $(this).attr('removeattrid');
+            console.log(attrId);
+
+            $('#attr' + attrId ).remove();
+        }
 
 
   function showAlert (results) {
     // show the result of submiting form.
 
     alert(results);
+    $("#productname").val('');
+    
+    $("#saleprice").val('');
+    $("#description").val('');
+    $("#attrname1").val('');
+    $("#attrvalue1").val('');
+    $("#attr-add").remove();
+
   }
 
   function getInfo(evt) {
@@ -63,6 +79,6 @@ var numAttr = 1;
 
   $("#addproduct").on("submit", getInfo);
   $('#addOneAttr').on('click', addOneAttr);
-  $('.remove_field').on('click', removeOneAttr);
+  $('#input_attrs_field').on('click', '.remove-btn', removeOneAttr);
 
 
