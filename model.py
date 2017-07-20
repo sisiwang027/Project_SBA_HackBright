@@ -109,7 +109,7 @@ class CategoryAttribute(db.Model):
 
 
 class CategoryDetail(db.Model):
-    """Products details."""
+    """Assossiation table bteween cagegories and category_attributes."""
 
     __tablename__ = "category_details"
 
@@ -231,12 +231,11 @@ class Sale(db.Model):
 ##############################################################################
 # Helper functions
 
-
-def connect_to_db(app):
+def connect_to_db(app, db_uri='postgresql:///sba'):
     """Connect the database to our Flask app."""
 
     # Configure to use our PostgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sba'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     db.app = app

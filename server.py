@@ -56,7 +56,7 @@ def register_process():
         new_user = User(email=email, password=password, first_name=firstname, last_name=lastname)
         db.session.add(new_user)
         db.session.commit()
-        flash('You have successfully registered')
+        flash('You have successfully registered.')
 
         return redirect("/")
 
@@ -92,7 +92,7 @@ def login_process():
         return redirect("/")  # if user login, show user's data. url_for(".class", user_id=u_login.user_id)
 
     else:
-        flash('Your information is incorrect')
+        flash('Your information is incorrect.')
 
         return redirect("/login")
 
@@ -172,15 +172,6 @@ def add_product_process():
     add_attr_to_table(attr_name)
 
     return add_product_to_table(one_product, attr_name)
-
-
-@app.route("/show_report")
-def show_report():
-    """show reports"""
-
-    table = show_table()
-
-    return render_template("report.html", table=table)
 
 
 @app.route("/product")
@@ -358,6 +349,15 @@ def show_sale_profit_chart():
 
 ###########################################################################
 #useful functon
+# @app.route("/show_report")
+# def show_report():
+#     """show reports"""
+
+#     table = show_table()
+
+#     return render_template("report.html", table=table)
+
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

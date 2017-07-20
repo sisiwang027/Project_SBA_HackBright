@@ -1,48 +1,48 @@
-from selenium import webdriver
+# from selenium import webdriver
 import unittest
 from unittest import TestCase
-from model import Employee, Department, connect_to_db, db, example_data
+from model import connect_to_db, db
 from server import app
+from flask import session
 import server
+from example_data import example_data
 
-class TestCalculator(unittest.TestCase):
+
+class FlaskTestsInSession(TestCase):
 
     def setUp(self):
-        self.browser = webdriver.Firefox()
+        """Stuff to do before every test."""
 
-    def tearDown(self):
-        self.browser.quit()
+        self.client = app.test_client()
+        app.config['TESTING'] = True
+        app.config['SECRET_KEY'] = 'WANGSS'
 
-    def test_title(self):
-        self.browser.get('http://localhost:5000/')
-        self.assertEqual(self.browser.title, 'UberCalc')
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess['user_id'] = 1
+                sess['first_name'] = 'sisi'
 
-    def test_math(self):
-        self.browser.get('http://localhost:5000/')
+    def test_login(self):
+        """Test login home page."""
 
-        x = self.browser.find_element_by_id('x-field')
-        x.send_keys("3")
-        y = self.browser.find_element_by_id('y-field')
-        y.send_keys("4")
+        result = self.client.get("/")
+        self.assertIn("Hi sisi!", result.data)
 
-        btn = self.browser.find_element_by_id('calc-button')
-        btn.click()
+    def test_upload(self):
+        """Test upload page."""
 
-        result = self.browser.find_element_by_id('result')
-        self.assertEqual(result.text, "7")
-
-
+        result = self.client.get("/upload_product")
+        self.assertIn("Select CSV file to upload:", result.data)
 
 
+class FlaskTestsDatabase(TestCase):
+    """Flask tests that use the database."""
 
-class FlaskTests(TestCase):
     def setUp(self):
         """Stuff to do before every test."""
 
         # Get the Flask test client
         self.client = app.test_client()
-
-        # Show Flask errors that happen during tests
         app.config['TESTING'] = True
 
         # Connect to test database
@@ -58,57 +58,75 @@ class FlaskTests(TestCase):
         db.session.close()
         db.drop_all()
 
-    def test_find_employee(self):
-        """Can we find an employee in the sample data?"""
+    def test_login(self):
+        """Test login page."""
 
-        leonard = Employee.query.filter(Employee.name == "Leonard").first()
-        self.assertEqual(leonard.name, "Leonard")
+        result = self.client.post("/login",
+                                  data={"email": "wangss.wuhan@gmail.com", "password": "1111"},
+                                  follow_redirects=True)
+        self.assertIn("You have successfully logged in.", result.data)
 
-    def test_emps_by_state(self):
-        """Find employees in a state."""
+    def test_notlogin(self):
+        """Test wrong login page."""
 
-        result = self.client.get("/emps-by-state?state=California")
+        result = self.client.post("/login",
+                                  data={"email": "wangss.wuhan@gmail.com", "password": "111"},
+                                  follow_redirects=True)
+        self.assertIn("Your information is incorrect.", result.data)
 
-        self.assertIn("Nadine", result.data)
+    def test_register(self):
+        """Test registe successfully page."""
+
+        result = self.client.post("/register",
+                                  data={"email": "test_wangss.wuhan@gmail.com",
+                                        "psw": "1111", "firstname": "testsisi",
+                                        "lastname": "testwang"},
+                                  follow_redirects=True)
+        self.assertIn("You have successfully registered.", result.data)
+
+    def test_duplicate_register(self):
+        """Test registe unsuccessfully page."""
+
+        result = self.client.post("/register",
+                                  data={"email": "wangss.wuhan@gmail.com",
+                                        "psw": "1111", "firstname": "testsisi",
+                                        "lastname": "testwang"},
+                                  follow_redirects=True)
+        self.assertIn("Your email was already registered!", result.data)
 
 
-class MockFlaskTests(TestCase):
-    """Flask tests that show off mocking."""
+class FlaskTestsNoSession(TestCase):
+    """Test log in and log out."""
 
     def setUp(self):
-        """Stuff to do before every test."""
+        """Before every test"""
 
-        # Get the Flask test client
+        app.config['TESTING'] = True
+        app.config['SECRET_KEY'] = 'WANGSS'
         self.client = app.test_client()
 
-        # Show Flask errors that happen during tests
-        app.config['TESTING'] = True
+    def test_logout(self):
+        """Test logout route."""
 
-        # Connect to test database
-        connect_to_db(app, "postgresql:///testdb")
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess['user_id'] = 1
 
-        # Create tables and add sample data
-        db.create_all()
-        example_data()
+            result = self.client.get('/logout', follow_redirects=True)
 
-        # Make mock
-        def _mock_state_to_code(state_name):
-            return "CA"
+            self.assertNotIn('user_id', session)
+            self.assertIn('You have successfully logged out.', result.data)
 
-        server.state_to_code = _mock_state_to_code
+    def test_register(self):
+        """Test registe page."""
 
-    def tearDown(self):
-        """Do at end of every test."""
+        result = self.client.get("/register", follow_redirects=True)
+        self.assertIn("<h1>Register</h1>", result.data)
 
-        db.session.close()
-        db.drop_all()
+# class MyAppUnitTestCase(unittest.TestCase):
 
-    def test_emps_by_state_with_mock(self):
-        """Find employees in a state."""
-
-        result = self.client.get('/emps-by-state?state=California')
-        self.assertIn("Nadine", result.data)
-
+#     def test_adder(self):
+#         assert arithmetic.adder(2, 3) == 5
 
 if __name__ == "__main__":
     unittest.main()
