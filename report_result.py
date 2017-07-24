@@ -84,7 +84,7 @@ def show_sal_qtychart_json(user_id, month_num, attr_list):
                              prod.c.cg_name).order_by((sale.c.year_at * 100 + sale.c.month_at).label("sale_at"), prod.c.cg_name)\
                    .all()
 
-    return sql_to_linechartejson(sale_qty_sum, "Quantities Chart")
+    return sql_to_linechartejson(sale_qty_sum, "Qty Chart")
 
 
 def show_sal_revenuechart_json(user_id, month_num, attr_list):
@@ -178,8 +178,6 @@ def sale_sum_report(user_id, attr_list, month_num):
     return result
 
 
-# ###########################################
-
 def prod_sum_report(user_id, attr_list, month_num):
     """Return data of Product Sum."""
     result = {}
@@ -260,17 +258,17 @@ def show_prodchart_json(user_id, month_num, attr_list):
                      .filter(Sale.transc_at < set_date)\
                      .group_by(Sale.prd_id).subquery()
 
-    prod = db.session.query(Product.prd_id,
-                            Product.cg_id, Category.cg_name)\
-                     .join(Category).join(Product.prddetail)\
-                     .filter(CategoryDetailValue.attr_val.in_(attr_list), Product.user_id == user_id)\
-                     .group_by(Product.prd_id, Product.cg_id, Category.cg_name).subquery()
+    # prod = db.session.query(Product.prd_id,
+    #                         Product.cg_id, Category.cg_name)\
+    #                  .join(Category).join(Product.prddetail)\
+    #                  .filter(CategoryDetailValue.attr_val.in_(attr_list), Product.user_id == user_id)\
+    #                  .group_by(Product.prd_id, Product.cg_id, Category.cg_name).subquery()
 
     product_sum = db.session.query(db.func.sum(sale.c.sale_qty).label("sale_qty_sum"),
                                    db.func.sum(purch.c.purch_qty - sale.c.sale_qty).label("purch_onhand_qty"))\
                             .join(purch, sale.c.prd_id == purch.c.prd_id).all()
 
-    return sql_to_pichartejson(product_sum, "Sale Information")
+    return sql_to_pichartejson(product_sum, "Sales Chart")
 
 
 def sql_to_barchartejson(sqlalchemy_list, chart_title):
@@ -285,10 +283,10 @@ def sql_to_barchartejson(sqlalchemy_list, chart_title):
 
     data_dict = {"labels": prod_list,
                  "datasets": [{"data": sale_list,
-                               "backgroundColor": ["#36A2EB", "#FF6384", "#FF6384", "#FF6384", "#FF6384",
-                                                   "#FF6384", "#FF6384", "#FF6384", "#FF6384", "#FF6384"]}]}
+                               "backgroundColor": ["#FF6384", "#36A2EB", "#36A2EB", "#36A2EB", "#36A2EB",
+                                                   "#36A2EB", "#36A2EB", "#36A2EB", "#36A2EB", "#36A2EB"]}]}
 
-    options = {"title": {"display": True, "text": chart_title}, "responsive": True}
+    options = {"title": {"display": True, "text": chart_title}, "legend": {"display": False}}
     data_chart = {"type": "bar", "options": options, "data": data_dict}
 
     return data_chart

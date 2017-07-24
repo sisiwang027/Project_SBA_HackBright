@@ -1,45 +1,45 @@
 productname,category,price,description,brand,style,material,color,size
-gap-dress-silk-Midnight-0,Clothing,78.99,gap dress,gap,dress,silk,Midnight,0
-gap-dress-silk-Pink-Polish-0,Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,0
-gap-dress-silk-Purple-Dark-0,Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,0
-gap-dress-silk-Red-Lipstick-0,Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,0
-gap-dress-silk-Black-0,Clothing,78.99,gap dress,gap,dress,silk,Black,0
-gap-dress-silk-Midnight-2,Clothing,78.99,gap dress,gap,dress,silk,Midnight,2
-gap-dress-silk-Pink-Polish-2,Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,2
-gap-dress-silk-Purple-Dark-2,Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,2
-gap-dress-silk-Red-Lipstick-2,Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,2
-gap-dress-silk-Black-2,Clothing,78.99,gap dress,gap,dress,silk,Black,2
-gap-dress-silk-Midnight-4,Clothing,78.99,gap dress,gap,dress,silk,Midnight,4
-gap-dress-silk-Pink-Polish-4,Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,4
-gap-dress-silk-Purple-Dark-4,Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,4
-gap-dress-silk-Red-Lipstick-4,Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,4
-gap-dress-silk-Black-4,Clothing,78.99,gap dress,gap,dress,silk,Black,4
-gap-dress-silk-Midnight-6,Clothing,78.99,gap dress,gap,dress,silk,Midnight,6
-gap-dress-silk-Pink-Polish-6,Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,6
-gap-dress-silk-Purple-Dark-6,Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,6
-gap-dress-silk-Red-Lipstick-6,Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,6
-gap-dress-silk-Black-6,Clothing,78.99,gap dress,gap,dress,silk,Black,6
-gap-dress-silk-Midnight-8,Clothing,78.99,gap dress,gap,dress,silk,Midnight,8
-gap-dress-silk-Pink-Polish-8,Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,8
-gap-dress-silk-Purple-Dark-8,Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,8
-gap-dress-silk-Red-Lipstick-8,Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,8
-gap-dress-silk-Black-8,Clothing,78.99,gap dress,gap,dress,silk,Black,8
-gap-dress-silk-Midnight-10,Clothing,78.99,gap dress,gap,dress,silk,Midnight,10
-gap-dress-silk-Pink-Polish-10,Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,10
-gap-dress-silk-Purple-Dark-10,Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,10
-gap-dress-silk-Red-Lipstick-10,Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,10
-gap-dress-silk-Black--10,Clothing,78.99,gap dress,gap,dress,silk,Black      ,10
-nike-AIR-JORDAN-4-RETRO-Black/Matte-5,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,5
-nike-AIR-JORDAN-4-RETRO-White/Pure-5,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,5
-nike-AIR-JORDAN-4-RETRO-Black/Matte-5.5,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,5.5
-nike-AIR-JORDAN-4-RETRO-White/Pure-5.5,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,5.5
-nike-AIR-JORDAN-4-RETRO-Black/Matte-6,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,6
-nike-AIR-JORDAN-4-RETRO-White/Pure-6,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,6
-nike-AIR-JORDAN-4-RETRO-Black/Matte-6.5,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,6.5
-nike-AIR-JORDAN-4-RETRO-White/Pure-6.5,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,6.5
-nike-AIR-JORDAN-4-RETRO-Black/Matte-7,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,7
-nike-AIR-JORDAN-4-RETRO-White/Pure-7,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,7
-nike-AIR-JORDAN-4-RETRO-Black/Matte-7.5,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,7.5
-nike-AIR-JORDAN-4-RETRO-White/Pure-7.5,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,7.5
-nike-AIR-JORDAN-4-RETRO-Black/Matte-8,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,8
-nike-AIR-JORDAN-4-RETRO-White/Pure-8,Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,8
+gap-dress-sm0,Clothing,78.99,gap dress,gap,dress,silk,Midnight,0
+gap-dress-spp0,Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,0
+gapdress(spd0),Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,0
+gapdress(sr0),Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,0
+gapdress(sb0),Clothing,78.99,gap dress,gap,dress,silk,Black,0
+gapdress(sm2),Clothing,78.99,gap dress,gap,dress,silk,Midnight,2
+gapdress(spp2),Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,2
+gapdress(spd2),Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,2
+gapdress(sr2),Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,2
+gapdress(sb2),Clothing,78.99,gap dress,gap,dress,silk,Black,2
+gapdress(sm4),Clothing,78.99,gap dress,gap,dress,silk,Midnight,4
+gapdress(spp4),Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,4
+gapdress(spd4),Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,4
+gapdress(sr4),Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,4
+gapdress(sb4),Clothing,78.99,gap dress,gap,dress,silk,Black,4
+gapdress(sm6),Clothing,78.99,gap dress,gap,dress,silk,Midnight,6
+gapdress(spp6),Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,6
+gapdress(spd6),Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,6
+gapdress(sr6),Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,6
+gapdress(sb6),Clothing,78.99,gap dress,gap,dress,silk,Black,6
+gapdress(sm8),Clothing,78.99,gap dress,gap,dress,silk,Midnight,8
+gapdress(spp8),Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,8
+gapdress(spd8),Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,8
+gapdress(sr8),Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,8
+gapdress(sb8),Clothing,78.99,gap dress,gap,dress,silk,Black,8
+gapdress(sm10),Clothing,78.99,gap dress,gap,dress,silk,Midnight,10
+gapdress(spp10),Clothing,78.99,gap dress,gap,dress,silk,Pink Polish,10
+gapdress(spd10),Clothing,78.99,gap dress,gap,dress,silk,Purple Dark,10
+gapdress(sr10),Clothing,78.99,gap dress,gap,dress,silk,Red Lipstick,10
+gapdress(sb10),Clothing,78.99,gap dress,gap,dress,silk,Black      ,10
+jordan4(b5),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,5
+jordan4(w5),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,5
+jordan4(b5.5),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,5.5
+jordan4(w5.5),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,5.5
+jordan4(b6),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,6
+jordan4(w6),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,6
+jordan4(b6.5),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,6.5
+jordan4(w6.5),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,6.5
+jordan4(b7),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,7
+jordan4(w7),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,7
+jordan4(b7.5),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,7.5
+jordan4(w7.5),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,7.5
+jordan4(b8),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,Black/Matte,8
+jordan4(w8),Shoes,180,nike shoes,nike,AIR JORDAN 4 RETRO,,White/Pure,8

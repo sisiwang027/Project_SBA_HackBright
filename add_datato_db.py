@@ -12,13 +12,13 @@ def add_attr_to_table(attr_list):
     """add attributes to  table, category_attributes."""
 
     for attr in attr_list:
-                    # add attributes into category_attributes.
-                    attr = attr.lower()
-                    if CategoryAttribute.query.filter_by(attr_name=attr).first():
-                        continue
-                    else:
-                        attrs = CategoryAttribute(attr_name=attr)
-                        db.session.add(attrs)
+        # add attributes into category_attributes.
+        attr = attr.lower()
+        if CategoryAttribute.query.filter_by(attr_name=attr).first():
+            continue
+        else:
+            attrs = CategoryAttribute(attr_name=attr)
+            db.session.add(attrs)
 
 
 def add_product_to_table(row_list, attr_list):
@@ -39,6 +39,7 @@ def add_product_to_table(row_list, attr_list):
         db.session.add(product)
         db.session.commit()
     except IntegrityError:
+        db.session.rollback()
         return "Product has existed, please input a new product! (Product is unique!)"
 
     attr_val = row_list[4:]

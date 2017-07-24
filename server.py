@@ -1,22 +1,23 @@
 """Small Business Assistant."""
 
 from jinja2 import StrictUndefined
-from flask_debugtoolbar import DebugToolbarExtension
-from flask import (Flask, render_template, redirect, request, flash,
-                   session, jsonify, url_for, send_from_directory)
+#from flask_debugtoolbar import DebugToolbarExtension
+from flask import (render_template, redirect, request, flash,
+                   session, jsonify)
 from model import (Gender, User, Customer, Category, CategoryAttribute, CategoryDetail,
-                   Product, CategoryDetailValue, ProductDetail, Sale, Purchase)
+                   Product, ProductDetail, Sale, Purchase)
 from model import connect_to_db, db, app
 from loadCSVfile import load_csv_product
 from add_datato_db import add_category, add_product_to_table, add_attr_to_table
-from report_result import show_sal_qtychart_json, sale_sum_report, prod_sum_report, show_sal_revenuechart_json, show_sal_profitchart_json, show_prodchart_json, prod_sum_report, show_top10_prod_json
-from report import show_table, show_test_table
+from report_result import (show_sal_qtychart_json, sale_sum_report,
+                           show_sal_revenuechart_json, show_sal_profitchart_json,
+                           show_prodchart_json, prod_sum_report, show_top10_prod_json)
 from sqlalchemy.sql.functions import coalesce
-from dateutil.relativedelta import relativedelta
+#from dateutil.relativedelta import relativedelta
 from datetime import datetime
-import json
+#import json
 
-app = Flask(__name__)
+#app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "WANGSS"
@@ -97,6 +98,32 @@ def login_process():
         return redirect("/login")
 
 
+@app.route('/prod_pichart_current.json')
+def show_home_product_chart():
+    """Return products data in current month as json."""
+
+    user_id = session.get("user_id")
+
+    month_num = str(datetime.now().year) + "-" + str(datetime.now().month)
+
+    attr_list = ['gap', 'nike']
+
+    data_dict = show_prodchart_json(user_id, month_num, attr_list)
+
+    return jsonify(data_dict)
+
+
+@app.route('/sale_linechart_oneyear.json')
+def show_home_sale_chart():
+    """Return sale quantities data in the past one year as json."""
+
+    user_id = session.get("user_id")
+
+    data_dict = show_sal_qtychart_json(user_id, 12, ['gap', 'nike'])
+
+    return jsonify(data_dict)
+
+
 @app.route("/logout", methods=["GET"])
 def logout_process():
     """User logs out."""
@@ -117,9 +144,11 @@ def upload_product():
 def upload_product_process():
     """Upload purchase transactions."""
 
-    file = request.files.get("fileToUpload")
+    upload_file = request.files.get("fileToUpload")
 
-    return load_csv_product(file)
+    flash(load_csv_product(upload_file))
+
+    return redirect("/upload_product")
 
 
 @app.route("/add_category")
@@ -281,7 +310,7 @@ def show_topproduct_chart():
 def show_sale_sum():
     """Show sumarizing information of sales."""
 
-    user_id = session.get("user_id")
+    # user_id = session.get("user_id")
 
     return render_template("sale_sum.html")
 
@@ -346,28 +375,18 @@ def show_sale_profit_chart():
     return jsonify(data_dict)
 
 
-
 ###########################################################################
-#useful functon
-# @app.route("/show_report")
-# def show_report():
-#     """show reports"""
-
-#     table = show_table()
-
-#     return render_template("report.html", table=table)
-
 
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
     app.jinja_env.auto_reload = app.debug  # make sure templates, etc. are not cached in debug mode
 
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run(port=5000, host='0.0.0.0')

@@ -4,8 +4,6 @@
 
 
 {% if session.get("user_id") %}
-<h2>Upload Files</h2>
-<p><a href="/upload_product">upload purchase transactions</a></p>
 
 <!-- 
 <p><a href="/upload_sale">upload sale transactions</a></p>
@@ -13,24 +11,51 @@
 <p><a href="/upload_category">upload category infomation</a></p> 
 -->
 
-<h2>Add Information</h2>
-<p><a href="/add_category">Add Categories</a></p>
+<h2>Product Catelog</h2>
+<p><a href="/add_category">Add Category</a></p>
+<p><a href="/add_product">Add Product</a></p>
 
-<p><a href="/add_product">Add Products</a></p>
+<h2>Upload Transactions</h2>
+<p><a href="/upload_product">Upload Purchase Transactions</a></p>
+<p><a href="/upload_product">Upload Sales Transactions</a></p>
+<p><a href="/upload_product">Upload Products</a></p>
 
-<h2>Reports</h2>
+
+<h2>Analysis Reports</h2>
 <!-- <p><a href="/show_report">Reports</a></p> -->
-<p><a href="/product_sum">Product Sumarize Preport</a></p>
-<p><a href="/sale_sum">Sale Sumarize Preport</a></p>
+<p><a href="/product_sum">Product Sumary Preport</a></p>
+<p><a href="/sale_sum">Sales Sumary Preport</a></p>
+<p><a href="/product">Product List</a></p>
 
+<div class="analysis-chart">
+  <canvas id="productSum"></canvas>
+  <div id="lineLegend" class="chart-legend"></div>
+</div>
 
-<h2>Products</h2>
-<p><a href="/product">Products</a></p>
+<div class="analysis-chart">
+  <canvas id="saleSum"></canvas>
+  <div id="lineLegend" class="chart-legend"></div>
+</div>
 
+<script>
 
+  // Make Donut Chart of quantities
+  var ctx_donut = $("#productSum").get(0).getContext("2d");
+
+  $.get("/prod_pichart_current.json", function (data) {
+    var myDonutChart = new Chart(ctx_donut, data);
+  });
+
+  // Make Line Chart of Product Sales in the past one year.
+  var ctx_line = $("#saleSum").get(0).getContext("2d");
+
+  $.get("/sale_linechart_oneyear.json", function (data) {
+    var myLineChart = Chart.Line(ctx_line, data);
+  });
+
+  </script>
 
 {% endif %}
-
 
 {% endblock %}
 <!doctype html>

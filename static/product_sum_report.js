@@ -14,9 +14,6 @@ Handlebars.registerHelper("formatFloat", function(data){
 
     var myChart = new Chart(ctx_chart, data);
 
-    // $("#lineLegend").html(myChart.generateLegend());
-
-
   }
 
   

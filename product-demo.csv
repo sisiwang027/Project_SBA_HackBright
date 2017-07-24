@@ -1,0 +1,16 @@
+productname,category,price,description,brand,style,material,color,size
+hmdress(spp0),Clothing,78.99,gap dress,hm,dress,silk,Pink Polish,0
+hmdress(spd0),Clothing,78.99,gap dress,hm,dress,silk,Purple Dark,0
+hmdress(sr0),Clothing,78.99,gap dress,hm,dress,silk,Red Lipstick,0
+hmdress(sb0),Clothing,78.99,gap dress,hm,dress,silk,Black,0
+hmdress(sm2),Clothing,78.99,gap dress,hm,dress,silk,Midnight,2
+gap-dress-sm0,Clothing,78.99,gap dress,gap,dress,silk,Midnight,0
+hmdress(spp2),Clothing,78.99,gap dress,hm,dress,silk,Pink Polish,2
+hmdress(spd2),Clothing,78.99,gap dress,hm,dress,silk,Purple Dark,2
+hmdress(sr2),Clothing,78.99,gap dress,hm,dress,silk,Red Lipstick,2
+hmdress(sb2),Clothing,78.99,gap dress,hm,dress,silk,Black,2
+hmdress(sm4),Clothing,78.99,gap dress,hm,dress,silk,Midnight,4
+hmdress(spp4),Clothing,78.99,gap dress,hm,dress,silk,Pink Polish,4
+hmdress(spd4),Clothing,78.99,gap dress,hm,dress,silk,Purple Dark,4
+hmdress(sr4),Clothing,78.99,gap dress,hm,dress,silk,Red Lipstick,4
+hmdress(sb4),Clothing,78.99,gap dress,hm,dress,silk,Black,4

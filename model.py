@@ -1,7 +1,7 @@
 """Models and database functions for Ratings project."""
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.schema import UniqueConstraint
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask
 
 app = Flask(__name__)
 
@@ -100,7 +100,6 @@ class CategoryAttribute(db.Model):
 
     cg_attr_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     attr_name = db.Column(db.String(30), nullable=False, unique=True)
-
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -228,9 +227,6 @@ class Sale(db.Model):
         return "<Sale transc_id={} user_id={} cust_id={} prd_id={}>".format(self.transc_id, self.user_id, self.cust_id, self.prd_id)
 
 
-##############################################################################
-# Helper functions
-
 def connect_to_db(app, db_uri='postgresql:///sba'):
     """Connect the database to our Flask app."""
 
@@ -250,98 +246,3 @@ if __name__ == "__main__":
 
     connect_to_db(app)
     print "Connected to DB."
-
-###########
-#Do it later.
-###########
-
-# class Purchase(db.Model):
-#     """Purchases that users purchased and sale."""
-
-#     __tablename__ = "purchases"
-
-#     purch_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-#     prd_id = db.Column(db.Integer, db.ForeignKey('products.prd_id'), nullable=False)
-#     purchase_at = db.Column(db.DateTime(), nullable=False)
-#     purchase_price = db.Column(db.DECIMAL(10, 2), nullable=False)
-#     quantities = db.Column(db.Integer, nullable=False)
-
-#     def __repr__(self):
-#         """Provide helpful representation when printed."""
-
-#         return "<Purchase p_id={} user_id={}>".format(self.p_id, self.user_id)
-
-
-# class Sale(db.Model):
-#     """Purchases that users purchased and sale."""
-
-#     __tablename__ = "sales"
-
-#     transc_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-#     cust_id = db.Column(db.Integer, db.ForeignKey('customers.cust_id'), nullable=False)
-#     prd_id = db.Column(db.Integer, db.ForeignKey('products.prd_id'), nullable=False)
-#     returned_flag = db.Column(db.Boolean, nullable=False)
-#     transc_at = db.Column(db.DateTime(), nullable=False)
-#     transc_price = db.Column(db.DECIMAL(10, 2), nullable=False)
-#     quantities = db.Column(db.Integer, nullable=False)
-
-    # def __repr__(self):
-    #     """Provide helpful representation when printed."""
-
-    #     return "<Sale transc_id={} user_id={} cust_id={} prd_id={}>".format(self.transc_id, self.user_id, self.cust_id, self.prd_id)
-
-
-# class PurchaseCgDetail(db.Model):
-#     """Detail infomation of each prodect."""
-
-#     __tablename__ = "purchase_cg_details"
-
-#     detail_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     p_id = db.Column(db.Integer, db.ForeignKey("purchases.p_id"), nullable=False)
-#     cg_detailvalue_id = db.Column(db.Integer, db.ForeignKey("category_detail_values.cg_detailvalue_id"), nullable=False)
-
-#     def __repr__(self):
-#         """Provide helpful representation when printed."""
-
-#         return "<PurchaseCgDetail p_id={} cg_detailvalue_id={}>".format(self.p_id, self.cg_detailvalue_id)
-
-
-# class SaleCgDetail(db.Model):
-#     """Detail infomation of each prodect."""
-
-#     __tablename__ = "sale_cg_details"
-
-#     detail_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     s_id = db.Column(db.Integer, db.ForeignKey("sales.s_id"), nullable=False)
-#     cg_detailvalue_id = db.Column(db.Integer, db.ForeignKey("category_detail_values.cg_detailvalue_id"), nullable=False)
-
-#     def __repr__(self):
-#         """Provide helpful representation when printed."""
-
-#         return "<SaleCgDetail s_id={} cg_detailvalue_id={}>".format(self.s_id, self.cg_detailvalue_id)
-
-
-# class TestUploadPurchase(db.Model):
-#     """Test upload purchase CSV."""
-
-#     __tablename__ = "test"
-
-#     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     user_id = db.Column(db.Integer, nullable=False)
-#     cg_id = db.Column(db.Integer, nullable=False)
-#     purchase_at = db.Column(db.DateTime(), nullable=False)
-#     purchase_price = db.Column(db.DECIMAL(10, 2), nullable=False)
-#     sale_price = db.Column(db.DECIMAL(10, 2), nullable=False)
-#     quantities = db.Column(db.Integer, nullable=False)
-#     style = db.Column(db.String(30), nullable=False)
-#     brand = db.Column(db.String(30), nullable=False)
-#     size = db.Column(db.String(30), nullable=False)
-#     material = db.Column(db.String(30), nullable=False)
-#     color = db.Column(db.String(30), nullable=False)
-
-#     def __repr__(self):
-#         """Provide helpful representation when printed."""
-
-#         return "<test >"
