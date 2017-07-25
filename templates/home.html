@@ -1,41 +1,48 @@
 {% extends 'base.html' %}
 {% block content %}
 
-
-
 {% if session.get("user_id") %}
+<div class="container">
+  <div class="row"></div>
+  <div class="row">
 
-<!-- 
-<p><a href="/upload_sale">upload sale transactions</a></p>
+    <div class="col-md-6 bordered" style="background-color:#f0f5f5;">
+      <div class="analysis-chart">
+        <canvas id="productSum"></canvas>
+        <div id="lineLegend" class="chart-legend"></div>
+      </div>
+    </div>
 
-<p><a href="/upload_category">upload category infomation</a></p> 
--->
+    <div class="col-md-6 bordered" style="background-color:#f0f5f5;">
+      <div class="analysis-chart">
+        <canvas id="saleSum"></canvas>
+        <div id="lineLegend" class="chart-legend"></div>
+      </div>
+    </div> 
+  </div>
 
-<h2>Product Catelog</h2>
-<p><a href="/add_category">Add Category</a></p>
-<p><a href="/add_product">Add Product</a></p>
+  <div class="row">
+    <div class="col-md-6" style="background-color:#f0f5f5;">
+      <div class="analysis-chart">
+        <canvas id="topTenProduct"></canvas>
+        <div id="lineLegend" class="chart-legend"></div>
+      </div>
 
-<h2>Upload Transactions</h2>
-<p><a href="/upload_product">Upload Purchase Transactions</a></p>
-<p><a href="/upload_product">Upload Sales Transactions</a></p>
-<p><a href="/upload_product">Upload Products</a></p>
+    </div>
 
 
-<h2>Analysis Reports</h2>
-<!-- <p><a href="/show_report">Reports</a></p> -->
-<p><a href="/product_sum">Product Sumary Preport</a></p>
-<p><a href="/sale_sum">Sales Sumary Preport</a></p>
-<p><a href="/product">Product List</a></p>
-
-<div class="analysis-chart">
-  <canvas id="productSum"></canvas>
-  <div id="lineLegend" class="chart-legend"></div>
+    <div class="col-md-6" style="background-color:#f0f5f5;">
+      <div class="analysis-chart">
+        <canvas id="topTenProduct2"></canvas>
+        <div id="lineLegend" class="chart-legend"></div>
+      </div>
+    </div>
+    
+  </div>
+  <div class="row"></div>
 </div>
 
-<div class="analysis-chart">
-  <canvas id="saleSum"></canvas>
-  <div id="lineLegend" class="chart-legend"></div>
-</div>
+
 
 <script>
 
@@ -51,6 +58,18 @@
 
   $.get("/sale_linechart_oneyear.json", function (data) {
     var myLineChart = Chart.Line(ctx_line, data);
+  });
+
+  var ctx_chart = $("#topTenProduct").get(0).getContext("2d");
+
+  $.get("/top_prod_barchart_current.json", function (data) {
+    var myChart = new Chart(ctx_chart, data);
+  });
+
+  var ctx_chart2 = $("#topTenProduct2").get(0).getContext("2d");
+
+  $.get("/top_prod_barchart_current.json", function (data) {
+    var myChart = new Chart(ctx_chart2, data);
   });
 
   </script>

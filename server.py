@@ -124,6 +124,21 @@ def show_home_sale_chart():
     return jsonify(data_dict)
 
 
+@app.route('/top_prod_barchart_current.json')
+def show_home_topproduct_chart():
+    """Return top ten products in current month as json."""
+
+    user_id = session.get("user_id")
+
+    month_num = str(datetime.now().year) + "-" + str(datetime.now().month)
+
+    attr_list = ['gap', 'nike']
+
+    data_dict = show_top10_prod_json(user_id, month_num, attr_list)
+
+    return jsonify(data_dict)
+
+
 @app.route("/logout", methods=["GET"])
 def logout_process():
     """User logs out."""

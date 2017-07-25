@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Log In</h1>
 
-<form action="/login" method="POST">
+
+<form class="form-group" action="/login" method="POST">
 
     <label for="email">Email: </label>
     <input type="email" name="email" required><br>
@@ -11,7 +11,7 @@
     <label for="password">Password: </label>
     <input type="password" name="password" required><br>
 
-    <input type="submit" name="submit" value="Log In">
+    <input type="submit" class="btn btn-primary" name="submit" value="Log In">
 
 </form>
 

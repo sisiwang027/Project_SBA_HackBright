@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 <br><br>
-<form action="/add_product" id="addproduct" method="POST">
-  Add a New product:
-  <br>
+<form class="form-group" action="/add_product" id="addproduct" method="POST">
+
 
   Category:
   <select id="category">
@@ -13,21 +12,21 @@
   </select><br>
 
   Product Name (It's unique for each product.): 
-  <input type="text" name="productname" id="productname"><br>
+  <input type="text" name="productname" id="productname" required><br>
 
   Sale Price:
-  <input type="number" name="saleprice" id="saleprice" step="0.01"><br>
+  <input type="number" name="saleprice" id="saleprice" step="0.01" required><br>
 
   Product Description:
-  <input type="text" name="description" id="description"><br>
+  <input type="text" name="description" id="description" required><br>
 
   <div class="input_attrs" id="input_attrs_field">
     
     <div class="input_attrs" id="attr1">
       Attribute Name:
-      <input type="text" name="attrname1" id="attrname1">
+      <input type="text" name="attrname1" id="attrname1" required>
       Attribute Value:
-      <input type="text" name="attrvalue1" id="attrvalue1">
+      <input type="text" name="attrvalue1" id="attrvalue1" required>
     </div>
     
     <div class="input_attrs" id="attr-add">
