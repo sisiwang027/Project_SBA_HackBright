@@ -7,11 +7,11 @@ from flask import (render_template, redirect, request, flash,
 from model import (Gender, User, Customer, Category, CategoryAttribute, CategoryDetail,
                    Product, ProductDetail, Sale, Purchase)
 from model import connect_to_db, db, app
-from loadCSVfile import load_csv_product
+from loadCSVfile import load_csv
 from add_datato_db import add_category, add_product_to_table, add_attr_to_table
 from report_result import (show_sal_qtychart_json, sale_sum_report,
                            show_sal_revenuechart_json, show_sal_profitchart_json,
-                           show_prodchart_json, prod_sum_report, show_top10_prod_json)
+                           show_prodchart_json, prod_sum_report, show_top10_prod_json, show_cust_age_json)
 from sqlalchemy.sql.functions import coalesce
 #from dateutil.relativedelta import relativedelta
 from datetime import datetime
@@ -139,6 +139,17 @@ def show_home_topproduct_chart():
     return jsonify(data_dict)
 
 
+@app.route('/cust_age_barchart.json')
+def show_home_cust_age_chart():
+    """Return top ten products in current month as json."""
+
+    user_id = session.get("user_id")
+
+    data_dict = show_cust_age_json(user_id)
+
+    return jsonify(data_dict)
+
+
 @app.route("/logout", methods=["GET"])
 def logout_process():
     """User logs out."""
@@ -148,22 +159,22 @@ def logout_process():
     return redirect("/")
 
 
-@app.route("/upload_product")
-def upload_product():
+@app.route("/upload_csvfile")
+def upload_csvfile():
     """Show upload page."""
 
     return render_template("upload_file.html")
 
 
-@app.route("/upload_product", methods=["POST"])
-def upload_product_process():
+@app.route("/upload_csvfile", methods=["POST"])
+def upload_csvfile_process():
     """Upload purchase transactions."""
 
     upload_file = request.files.get("fileToUpload")
 
-    flash(load_csv_product(upload_file))
+    flash(load_csv(upload_file))
 
-    return redirect("/upload_product")
+    return redirect("/upload_csvfile")
 
 
 @app.route("/add_category")
@@ -211,11 +222,14 @@ def add_product_process():
 
     one_product = [productname, category, float(saleprice), description] + attr_val
 
-    print one_product, attr_name
-
     add_attr_to_table(attr_name)
 
-    return add_product_to_table(one_product, attr_name)
+    result_msg = add_product_to_table(one_product, attr_name)
+
+    if result_msg == "fail":
+        return "Product has existed, please input a new product! (Product is unique!)"
+    else:
+        return result_msg
 
 
 @app.route("/product")

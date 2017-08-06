@@ -147,13 +147,13 @@ def load_purchases():
 
 if __name__ == "__main__":
     connect_to_db(app)
-    db.drop_all()
+    # db.drop_all()
 
     db.create_all()
 
-    load_users()
-    load_gendertype()
-    load_customers()
-    load_categories()
-    # load_purchases()
-    # load_sales()
+    # load_users()
+    # load_gendertype()
+    # load_customers()
+    # load_categories()
+    load_purchases()
+    load_sales()

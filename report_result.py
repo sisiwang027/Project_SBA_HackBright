@@ -308,8 +308,36 @@ def show_top10_prod_json(user_id, month_num, attr_list):
     return sql_to_barchartejson(top10_prod, "Top Ten Products")
 
 
+def sql_to_cust_barchartejson(sqlalchemy_list, chart_title):
+    """Change the result of sqlalchemy to barcharte json"""
+
+    distrib_name = []
+    cust_num = []
+
+    for distri_name, num in sqlalchemy_list:
+        distrib_name.append(distri_name)
+        cust_num.append(num)
+
+    data_dict = {"labels": distrib_name,
+                 "datasets": [{"data": cust_num,
+                               "backgroundColor": ["#36A2EB", "#FF6384", "#36A2EB", "#36A2EB"]}]}
+
+    options = {"title": {"display": True, "text": chart_title}, "legend": {"display": False}}
+    data_chart = {"type": "bar", "options": options, "data": data_dict}
+
+    return data_chart
 
 
+def show_cust_age_json(user_id):
+    """Show customer age distribution chart."""
+
+    sql = "select birth, count(*) num from ( select case when date_part('year',age(birth_date)) < 20 then 'age:0-20' when date_part('year',age(birth_date)) between 20 and 30 then 'age:21-30' when date_part('year',age(birth_date)) between 30 and 40 then 'age:31-40' when date_part('year',age(birth_date)) > 40 then 'age:41 and up' end birth from customers where user_id = 1 ) a group by birth order by 1"
+
+    cursor = db.session.execute(sql)
+
+    result = cursor.fetchall()
+
+    return sql_to_cust_barchartejson(result, "Customers Age Distribution")
 
 
 if __name__ == "__main__":

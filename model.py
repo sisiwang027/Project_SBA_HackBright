@@ -224,7 +224,7 @@ class Sale(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<Sale transc_id={} user_id={} cust_id={} prd_id={}>".format(self.transc_id, self.user_id, self.cust_id, self.prd_id)
+        return "<Sale transc_id={} cust_id={} prd_id={}>".format(self.transc_id, self.cust_id, self.prd_id)
 
 
 def connect_to_db(app, db_uri='postgresql:///sba'):

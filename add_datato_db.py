@@ -8,8 +8,59 @@ from model import connect_to_db, db, app
 from flask import session
 
 
+def add_file_to_db(row, filename, title=[]):
+    """Add CSV file to database.
+
+    According to different filename, call different function to store data to different target tables."""
+
+    if "product" in filename:
+        return add_product_to_table(row, title)
+
+    elif "sale" in filename or "purchase" in filename:
+        return add_transc_to_table(row, filename)
+
+
+def add_transc_to_table(row, filename):
+    """Add one row of purchases or sales transctions in CSV file to data base."""
+
+    if "purchase" in filename:
+        #load purchase transaction file
+
+        prd = Product.query.filter_by(prd_name=row[0].lower()).first()
+
+        add_row = Purchase(prd_id=prd.prd_id,
+                           purchase_at=row[1],
+                           purchase_price=row[2],
+                           quantities=row[3])
+
+    elif "sale" in filename:
+        #load sale transaction file
+
+        cust = Customer.query.filter_by(email=row[0]).first()
+        prd = Product.query.filter_by(prd_name=row[1].lower()).first()
+
+        add_row = Sale(cust_id=cust.cust_id,
+                       prd_id=prd.prd_id,
+                       returned_flag=row[2],
+                       transc_at=row[3],
+                       transc_price=row[4],
+                       quantities=row[5]
+                       )
+    else:
+        return "Please upload purchases and sales transcations CSV file."
+
+    try:
+        db.session.rollback()
+        db.session.add(add_row)
+        db.session.commit()
+        return "Submit successfully!"
+    except IntegrityError:
+        db.session.rollback()
+        return "fail"
+
+
 def add_attr_to_table(attr_list):
-    """add attributes to  table, category_attributes."""
+    """add attributes to  table category_attributes."""
 
     for attr in attr_list:
         # add attributes into category_attributes.
@@ -22,7 +73,7 @@ def add_attr_to_table(attr_list):
 
 
 def add_product_to_table(row_list, attr_list):
-    """Add file to five talbes.
+    """Add one row of product CSV file to five talbes.
 
     products, category_detail_values,
     product_details, category_attributes, category_details."""
@@ -40,7 +91,7 @@ def add_product_to_table(row_list, attr_list):
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        return "Product has existed, please input a new product! (Product is unique!)"
+        return "fail"
 
     attr_val = row_list[4:]
     val_list = []

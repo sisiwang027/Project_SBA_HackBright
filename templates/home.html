@@ -8,7 +8,7 @@
 
     <div class="col-md-6 bordered" style="background-color:#f0f5f5;">
       <div class="analysis-chart">
-        <canvas id="productSum"></canvas>
+        <canvas id="topTenProduct"></canvas>
         <div id="lineLegend" class="chart-legend"></div>
       </div>
     </div>
@@ -22,18 +22,18 @@
   </div>
 
   <div class="row">
-    <div class="col-md-6" style="background-color:#f0f5f5;">
+    <div class="col-md-6 bordered" style="background-color:#f0f5f5;">
       <div class="analysis-chart">
-        <canvas id="topTenProduct"></canvas>
+        <canvas id="productSum"></canvas>
         <div id="lineLegend" class="chart-legend"></div>
       </div>
 
     </div>
 
 
-    <div class="col-md-6" style="background-color:#f0f5f5;">
+    <div class="col-md-6 bordered" style="background-color:#f0f5f5;">
       <div class="analysis-chart">
-        <canvas id="topTenProduct2"></canvas>
+        <canvas id="custAge"></canvas>
         <div id="lineLegend" class="chart-legend"></div>
       </div>
     </div>
@@ -66,9 +66,9 @@
     var myChart = new Chart(ctx_chart, data);
   });
 
-  var ctx_chart2 = $("#topTenProduct2").get(0).getContext("2d");
+  var ctx_chart2 = $("#custAge").get(0).getContext("2d");
 
-  $.get("/top_prod_barchart_current.json", function (data) {
+  $.get("/cust_age_barchart.json", function (data) {
     var myChart = new Chart(ctx_chart2, data);
   });
 

@@ -7,49 +7,71 @@
 # from flask import (Flask, render_template, redirect, request, flash,
 #                    session, jsonify, url_for, send_from_directory)
 
-from add_datato_db import add_attr_to_table, add_product_to_table
+from add_datato_db import add_attr_to_table, add_file_to_db
 
 
-def load_csv_product(load_file):
+def return_result(upload_result):
+    """Return a massage of the result of the upload."""
+
+    failed_records = upload_result.count("fail")
+    done_records = upload_result.count("Submit successfully!")
+    fail_row = ""
+
+    for index, val in enumerate(upload_result):
+        #add all failed row number to a string.
+        if val == "fail":
+            fail_row = fail_row + str(index + 1) + " "
+
+    if failed_records == 0:
+        # return result massage.
+        return "Upload {} rows successfully!".format(done_records)
+    else:
+        return "{} rows uploaded successfully, {} rows unsuccessfully! These row numbers failed: {}!".format(done_records, failed_records, fail_row)
+
+
+def load_csv(load_file):
     """Load data from product file to five tables.
 
     products, category_detail_values,
     product_details, category_attributes, category_details."""
 
-    prd_result = []
-    fail_row = ''
+    upload_result = []
 
     if not load_file:
         return "No Selected File!" + "\n" + "Please choose a file."
     elif load_file.content_type != "text/csv":
         return "Please upload a CSV file."
-    else:
+    elif "purchase" in load_file.filename or "sale" in load_file.filename:
+        row_idx = 0
+        for line in load_file:
+            if row_idx != 0:
+                row = line.rstrip().split(",")
+
+                upload_result.append(add_file_to_db(row, load_file.filename))
+
+            row_idx += 1
+
+        return return_result(upload_result)
+
+    elif "product" in load_file.filename:
         i = 0
         for line in load_file:
             row = line.rstrip().split(",")
             for colum in row:
                 colum = colum.strip()
             if i == 0:
-                # read the title of CSV file.
-                i += 1
+                # read the head of a CSV file.
                 category_attr = row[4:]
+
                 # read attributes of category
                 add_attr_to_table(category_attr)
+
+                i += 1
             else:
-                result = add_product_to_table(row, category_attr)
-                prd_result.append(result)
+                #record each row's result of the upload.
+                upload_result.append(add_file_to_db(row, load_file.filename, category_attr))
 
-        failed_records = prd_result.count("Product has existed, please input a new product! (Product is unique!)")
-        done_records = prd_result.count("Submit successfully!")
-
-        for index, val in enumerate(prd_result):
-            if val == "Product has existed, please input a new product! (Product is unique!)":
-                fail_row = fail_row + str(index + 1) + " "
-
-        if failed_records == 0:
-            return "Upload {} rows successfully!".format(done_records)
-        else:
-            return "Upload {} rows successfully, {} failed! Failed rows' number: {}".format(done_records, failed_records, fail_row)
+        return return_result(upload_result)
 
 
 if __name__ == "__main__":
