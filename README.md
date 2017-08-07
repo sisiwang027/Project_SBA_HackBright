@@ -36,7 +36,8 @@ User can add one product by filling in the form. A product is a type of item use
 
 ## <a name="upload"></a>How to batch upload transactions
 
-After having this product, Users can record its purchase and sales transactions. Choose a csv file to upload. The content of the file will be read by the system and return the result as a Flash massage. If some row upload failed, users can use the flash massage to correct it. 
+After having this product, Users can record its purchase and sales transactions. Choose a csv file to upload. The content of the file will be read by the system and return the result as a Flash massage. If some row upload failed, users can use the flash massage to correct it.
+
 ![Users upload transcations CSV file](/static/readme/upload-purchase1.png)
 ![Users upload transcations CSV file](/static/readme/upload-purchase2.png)
 ![Users upload transcations CSV file](/static/readme/upload-purchase3.png)
@@ -44,9 +45,10 @@ After having this product, Users can record its purchase and sales transactions.
 
 
 
-## <a name="reports"></a>How to batch upload transactions
+## <a name="reports"></a>How to show business performance
 
 Recording business activities is only one part. The more important is to show how uesers' business performance. 
+
 
 ![How to show business performance](/static/readme/reports1.png)
 ![How to show business performance](/static/readme/reports2.png)
@@ -56,7 +58,10 @@ Recording business activities is only one part. The more important is to show ho
 
 ## <a name="datamodel"></a>Data Model
 
+Part 1
 ![Data Model](/static/readme/datamodel1.png)
+
+Part 2
 ![Data Model](/static/readme/datamodel2.png)
 
 
