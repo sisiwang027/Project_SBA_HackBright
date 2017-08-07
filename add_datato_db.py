@@ -71,6 +71,8 @@ def add_attr_to_table(attr_list):
             attrs = CategoryAttribute(attr_name=attr)
             db.session.add(attrs)
 
+    return True
+
 
 def add_product_to_table(row_list, attr_list):
     """Add one row of product CSV file to five talbes.
@@ -80,7 +82,7 @@ def add_product_to_table(row_list, attr_list):
 
     cg = Category.query.filter_by(cg_name=row_list[1].lower()).first()
 
-    product = Product(user_id=session["user_id"],
+    product = Product(user_id=1,  # session["user_id"],
                       prd_name=row_list[0],
                       cg_id=cg.cg_id,
                       sale_price=row_list[2],

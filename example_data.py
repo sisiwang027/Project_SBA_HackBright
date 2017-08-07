@@ -32,11 +32,12 @@ def example_data():
     #Load customer from faker into database
     email_company = ['@gmail.com', '@hotmail.com']
 
-    for i in range(0, 10):
+    for i in range(0, 1):
 
         first_name = fake.first_name_male()
         last_name = fake.last_name()
-        email = first_name + last_name + random.choice(email_company)
+        #email = first_name + last_name + random.choice(email_company)
+        email = 'ww@gmail.com'
 
         customer = Customer(first_name=first_name,
                             last_name=last_name,
@@ -133,7 +134,7 @@ def example_data():
 
     #Load product sale infomation
     for i in range(0, 20):
-        sale = Sale(cust_id=random.randint(1, 20),
+        sale = Sale(cust_id=random.randint(1, 11),
                     prd_id=1,
                     returned_flag=False,
                     transc_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),
@@ -144,7 +145,7 @@ def example_data():
         db.session.add(sale)
 
     for i in range(0, 20):
-        sale = Sale(cust_id=random.randint(1, 20),
+        sale = Sale(cust_id=random.randint(1, 11),
                     prd_id=2,
                     returned_flag=False,
                     transc_at=fake.date_time_between(start_date="-1y", end_date="now", tzinfo=None),

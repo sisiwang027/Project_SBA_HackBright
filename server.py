@@ -264,8 +264,8 @@ def show_purchase(prd_id):
 
     purchases = product.purchases
 
-    total_pur_price = db.session.query(db.func.sum(Purchase.purchase_price).label("total"))\
-                                .filter(Product.prd_id == 1).one()
+    total_pur_price = db.session.query(db.func.sum(Purchase.purchase_price * Purchase.quantities).label("total"))\
+                                .filter(Purchase.prd_id == prd_id).one()
 
     return render_template("purchase.html", purchases=purchases, product=product, total_pur_price=total_pur_price)
 

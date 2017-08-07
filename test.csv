@@ -1,4 +1,0 @@
-user_id,category_id,purchase_date,purchase_price,sale_price,quantities,category,style,brand,size,material,color,importfrom
-1,1,6/22/17,50.99,120.99,20,clothing,Dress,GAP,6,silk,midnight,china
-1,1,6/22/17,50.99,120.99,20,clothing,Dress,Zara,10,silk,pink,usa
-1,1,6/22/17,50.99,120.99,20,clothing,Dress,Zara,12,silk,purple,china
