@@ -1,6 +1,6 @@
 # Small Business Assistant
 Multi-tenant web application, which helps small business owners to record their business activities and analyze business performance. Multiple users use the same instance of this application and only see their own data. This application contains three main parts: maintaining product catalog, transactions batch upload, and analysis reports.
-![Homepage-User's Dashboard](/static/SBA-home.png)
+![Homepage-User's Dashboard](/static/readme/SBA-home.png)
 
 
 
@@ -56,7 +56,8 @@ Recording business activities is only one part. The more important is to show ho
 
 ## <a name="datamodel"></a>Data Model
 
-![Data Model](/static/readme/sba.pdf)
+![Data Model](/static/readme/datamodel1.png)
+![Data Model](/static/readme/datamodel2.png)
 
 
 ## <a name="author"></a>Author
