@@ -9,6 +9,7 @@ Multi-tenant web application, which helps small business owners to record their 
 * [How to maintain product catalog](#catalog)
 * [How to batch upload transactions](#upload)
 * [How to show business performance](#reports)
+* [Data Model](#datamodel)
 
 
 ## <a name="technologiesused"></a>Technologies Used
@@ -28,7 +29,7 @@ Multi-tenant web application, which helps small business owners to record their 
 
 User can add one product by filling in the form. A product is a type of item users sale, and each product has different attribute. In additon, users can add and remove as many user-defined attributes as they want. The reason why it’s possible is that all attributes are not stored as columns in the product table but as rows in separate child table.
 
-![Users maintain product](/static/add-product.png)
+![Users maintain product](/static/readme/add-product.png)
 
 
 
@@ -36,9 +37,9 @@ User can add one product by filling in the form. A product is a type of item use
 ## <a name="upload"></a>How to batch upload transactions
 
 After having this product, Users can record its purchase and sales transactions. Choose a csv file to upload. The content of the file will be read by the system and return the result as a Flash massage. If some row upload failed, users can use the flash massage to correct it. 
-![Users upload transcations CSV file](/static/upload-purchase1.png)
-![Users upload transcations CSV file](/static/upload-purchase2.png)
-![Users upload transcations CSV file](/static/upload-purchase3.png)
+![Users upload transcations CSV file](/static/readme/upload-purchase1.png)
+![Users upload transcations CSV file](/static/readme/upload-purchase2.png)
+![Users upload transcations CSV file](/static/readme/upload-purchase3.png)
 
 
 
@@ -47,10 +48,15 @@ After having this product, Users can record its purchase and sales transactions.
 
 Recording business activities is only one part. The more important is to show how uesers' business performance. 
 
-![How to show business performance](/static/reports1.png)
-![How to show business performance](/static/reports2.png)
-![How to show business performance](/static/reports3.png)
+![How to show business performance](/static/readme/reports1.png)
+![How to show business performance](/static/readme/reports2.png)
+![How to show business performance](/static/readme/reports3.png)
 
+
+
+## <a name="datamodel"></a>Data Model
+
+![Data Model](/static/readme/sba.pdf)
 
 
 ## <a name="author"></a>Author
