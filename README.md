@@ -22,7 +22,7 @@ Multi-tenant web application, which helps small business owners to record their 
 * HTML
 * Bootstrap
 
-(dependencies are listed in requirements.txt)
+
 
 ## <a name="catalog"></a>How to maintain product catalog
 
@@ -42,6 +42,7 @@ After having this product, Users can record its purchase and sales transactions.
 
 
 
+
 ## <a name="reports"></a>How to batch upload transactions
 
 Recording business activities is only one part. The more important is to show how uesers' business performance. 
@@ -49,6 +50,7 @@ Recording business activities is only one part. The more important is to show ho
 ![How to show business performance](/static/reports1.png)
 ![How to show business performance](/static/reports2.png)
 ![How to show business performance](/static/reports3.png)
+
 
 
 ## <a name="author"></a>Author
