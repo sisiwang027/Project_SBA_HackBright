@@ -58,10 +58,15 @@ Recording business activities is only one part. The more important is to show ho
 
 ## <a name="datamodel"></a>Data Model
 
-Part 1
+#### Part 1
+
+
 ![Data Model](/static/readme/datamodel1.png)
 
-Part 2
+
+#### Part 2
+
+
 ![Data Model](/static/readme/datamodel2.png)
 
 
